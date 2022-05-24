@@ -1,0 +1,952 @@
+-- Basic Framework Plugin
+-- by QSC
+-- October 2020
+-- Information block for the plugin
+PluginInfo = {
+  Name = "TAG~Help Wizard",
+  Version = "0.0",
+  BuildVersion = "0.1.0.43",
+  Id = "",
+  Author = "Jason Foord (TAG)",
+  Description = "Configure help issues that can assist your users with resolving problems."
+}
+width = 250 -- scalable plugin width
+control_depth = 16 -- scalable control depth
+control_gap = 3 -- vertical space between controls
+
+Colors = {
+    none = {0, 0, 0, 0},
+    primary = {250, 218, 93},
+    secondary = {236, 222, 243},
+    heading = {50, 50, 50},
+    label = {50, 50, 50},
+    stroke = {119, 80, 169},
+    black = {50, 50, 50}
+}
+
+Sizes = {
+    ["Button"] = {36, control_depth},
+    ["Text"] = {(width - 30) / 2, control_depth},
+    ["Status"] = {width - 30, control_depth},
+    ["LED"] = {16, control_depth},
+    ["ListBox"] = {width - 30, (control_depth * 5) + (control_gap * 4)},
+    ["Image"] = {width - 30, (control_depth * 6) + (control_gap * 5)}
+}
+
+Master_Object = {{
+
+    ["PageName"] = "Wizard",
+
+    ["Groupings"] = {{
+        ["Name"] = "Custom Messages",
+        ["Depth"] = 2,
+        ["Controls"] = {{
+            Name = "wizard.config.message.resolved",
+            PrettyName = "Wizard~Configuration~Resolved Message",
+            Label = "Resolved",
+            ControlType = "Text",
+            PinStyle = "Both",
+            UserPin = true,
+            Size = Sizes.Text,
+            GridPos = 1
+        }, {
+            Name = "wizard.config.message.unresolved",
+            PrettyName = "Wizard~Configuration~Unresolved Message",
+            Label = "Unresolved",
+            ControlType = "Text",
+            PinStyle = "Both",
+            UserPin = true,
+            Size = Sizes.Text,
+            GridPos = 2
+        }}
+
+    }, {
+        ["Name"] = "Controls",
+        ["Depth"] = 26,
+        ["Controls"] = {{
+            Name = "wizard.controls.issue.type",
+            Label = "Issue Category",
+            ControlType = "Text",
+            Style = "ComboBox",
+            Size = Sizes.Text,
+            GridPos = 1
+        }, {
+            Name = "wizard.controls.issue.list",
+            Label = "Issue List",
+            ControlType = "Text",
+            Style = "ListBox",
+            Width = "Full",
+            Size = Sizes.ListBox,
+            GridPos = 3
+        }, {
+            Name = "wizard.controls.start",
+            PrettyName = "Wizard~Controls~Start",
+            Legend = "Start",
+            ControlType = "Button",
+            ButtonType = "Trigger",
+            PinStyle = "Both",
+            UserPin = true,
+            Size = Sizes.Button,
+            GridPos = 9
+        }, {
+            Name = "wizard.controls.message",
+            PrettyName = "Wizard~Controls~User Message",
+            Label = "Message",
+            ControlType = "Indicator",
+            IndicatorType = "Text",
+            PinStyle = "Output",
+            UserPin = true,
+            Size = Sizes.Status,
+            Width = "Full",
+            GridPos = 10
+        }, {
+            Name = "wizard.controls.prompt",
+            PrettyName = "Wizard~Controls~User Prompt",
+            Label = "Prompt",
+            ControlType = "Indicator",
+            IndicatorType = "Text",
+            PinStyle = "Output",
+            UserPin = true,
+            Size = Sizes.Status,
+            Width = "Full",
+            GridPos = 13
+        }, {
+            Name = "wizard.controls.image",
+            Label = "Image",
+            ControlType = "Button",
+            ButtonType = "Toggle",
+            PinStyle = "Both",
+            UserPin = true,
+            Size = Sizes.Image,
+            Width = "Full",
+            GridPos = 16
+        }, {
+            Name = "wizard.controls.progress",
+            Label = "Progress",
+            ControlType = "Knob",
+            ControlUnit = "Position",
+            PinStyle = "Output",
+            UserPin = true,
+            Size = Sizes.Button,
+            GridPos = 24
+        }, {
+            Name = "wizard.controls.stage.next",
+            PrettyName = "Wizard~Controls~Next Stage",
+            Label = "Next Stage",
+            Icon = "Fast Forward",
+            ControlType = "Button",
+            ButtonType = "Trigger",
+            PinStyle = "Both",
+            UserPin = true,
+            Size = Sizes.Button,
+            GridPos = 25
+        }, {
+            Name = "wizard.controls.issue.resolved",
+            PrettyName = "Wizard~Controls~Issue Resolved",
+            Label = "Issue Resolved",
+            Icon = "Check",
+            ControlType = "Button",
+            ButtonType = "Trigger",
+            PinStyle = "Both",
+            UserPin = true,
+            Size = Sizes.Button,
+            GridPos = 26
+        }}
+    }}
+}, {
+
+    ["PageName"] = "Image Store",
+
+    ["Groupings"] = {}
+}}
+-- Define the color of the plugin object in the design
+function GetColor(props)
+    return Colors.primary
+end
+
+-- The name that will initially display when dragged into a design
+function GetPrettyName(props)
+    return string.format("TAG Help Wizard [%s]", PluginInfo.Version)
+end
+
+-- Optional function used if plugin has multiple pages
+function GetPages(props)
+    local pages = {}
+    local master = {}
+    
+    for i, tbl in ipairs(Master_Object) do
+        table.insert(master, tbl)
+    end
+    
+    for i = 1, props['Image Store Size'].Value do
+        table.insert(master[2].Groupings, {
+            ["Name"] = string.format("Image %d", i),
+            ["Depth"] = 2,
+            ["Controls"] = {{
+                Name = string.format("store.image.%d.name", i),
+                PrettyName = string.format("Image Store~%d~Name", i),
+                Label = "Name",
+                ControlType = "Text",
+                PinStyle = "Both",
+                UserPin = true,
+                Size = Sizes.Text,
+                GridPos = 1
+            },{
+              Name = string.format("store.image.%d.data", i),
+              PrettyName = string.format("Image Store~%d~Data", i),
+              Label = "Base64 Image Data",
+              ControlType = "Text",
+              PinStyle = "Both",
+              UserPin = true,
+              Size = Sizes.Text,
+              GridPos = 2
+          }}
+        })
+    end
+    
+    for i = 1, props['Number of Issues'].Value do
+    
+        local tbl = {
+            ["PageName"] = string.format("Issue %d", i),
+    
+            ["Groupings"] = {{
+                ["Name"] = "Configuration",
+                ["Depth"] = 3,
+                ["Controls"] = {{
+                    Name = string.format("issue.%d.enable", i),
+                    PrettyName = string.format("Issue %d~Enable", i),
+                    Label = "Enable",
+                    ControlType = "Button",
+                    ButtonType = "Toggle",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 1
+                }, {
+                    Name = string.format("issue.%d.category", i),
+                    PrettyName = string.format("Issue %d~Category", i),
+                    Label = "Issue Category",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 2
+                }, {
+                    Name = string.format("issue.%d.description", i),
+                    PrettyName = string.format("Issue %d~Description", i),
+                    Label = "Description",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 3
+                }}
+            }}
+        }
+    
+        for stage = 1, props['Number of Stages'].Value do
+            table.insert(tbl.Groupings, {
+                ["Name"] = string.format("Stage %d", stage),
+                ["Depth"] = 7,
+                ["Controls"] = {{
+                    Name = string.format("issue.%d.stage.%d.message", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Message", i, stage),
+                    Label = "Message",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 1
+                }, {
+                    Name = string.format("issue.%d.stage.%d.prompt.action", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Action Prompt", i, stage),
+                    Label = "Action Prompt",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 2
+                }, {
+                    Name = string.format("issue.%d.stage.%d.prompt.resolution", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Resolution Prompt", i, stage),
+                    Label = "Resolution Prompt",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 3
+                }, {
+                    Name = string.format("issue.%d.stage.%d.image", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Image", i, stage),
+                    Label = "Image",
+                    ControlType = "Text",
+                    Style = "ComboBox",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 4
+                }, {
+                    Name = string.format("issue.%d.stage.%d.wait", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Wait Time", i, stage),
+                    Label = "Wait Time",
+                    ControlType = "Knob",
+                    ControlUnit = "Integer",
+                    Min = 0,
+                    Max = 60,
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 5
+                }, {
+                    Name = string.format("issue.%d.stage.%d.logicinput", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Logic Input", i, stage),
+                    -- Label = "Description",
+                    ControlType = "Indicator",
+                    IndicatorType = "Led",
+                    PinStyle = "Input",
+                    Label = "Logic Input",
+                    UserPin = true,
+                    Size = Sizes.LED,
+                    GridPos = 6
+                }, {
+                    Name = string.format("issue.%d.stage.%d.action.trigger", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Action Trigger", i, stage),
+                    -- Label = "Description",
+                    ControlType = "Button",
+                    ButtonType = "Trigger",
+                    PinStyle = "Output",
+                    Label = "Action Trigger",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 7
+                }}
+            })
+        end
+    
+        table.insert(master, tbl)
+    end
+    for i, tbl in ipairs(master) do
+      table.insert(pages, {name = tbl.PageName})
+    end
+    return pages
+end
+
+-- Optional function to define model if plugin supports more than one model
+function GetModel(props)
+    local model = {}
+    return model
+end
+
+-- Define User configurable Properties of the plugin
+function GetProperties()
+    local props = {}
+    table.insert(props, {
+      Name = "Number of Issues",
+      Type = "integer",
+      Min = 2,
+      Max = 100,
+      Value = 5
+    })
+    
+    table.insert(props, {
+      Name = "Number of Stages",
+      Type = "integer",
+      Min = 2,
+      Max = 10,
+      Value = 2
+    })
+    
+    table.insert(props, {
+      Name = "Image Store Size",
+      Type = "integer",
+      Min = 2,
+      Max = 100,
+      Value = 2
+    })
+    return props
+end
+
+-- Optional function to define pins on the plugin that are not connected to a Control
+function GetPins(props)
+    local pins = {}
+    return pins
+end
+
+-- Optional function to update available properties when properties are altered by the user
+function RectifyProperties(props)
+    return props
+end
+
+-- Optional function to define components used within the plugin
+function GetComponents(props)
+    local components = {}
+    return components
+end
+
+-- Optional function to define wiring of components used within the plugin
+function GetWiring(props)
+    local wiring = {}
+    return wiring
+end
+
+-- Defines the Controls used within the plugin
+function GetControls(props)
+    local ctls = {}
+    local master = {}
+    
+    for i, tbl in ipairs(Master_Object) do
+        table.insert(master, tbl)
+    end
+    
+    for i = 1, props['Image Store Size'].Value do
+        table.insert(master[2].Groupings, {
+            ["Name"] = string.format("Image %d", i),
+            ["Depth"] = 2,
+            ["Controls"] = {{
+                Name = string.format("store.image.%d.name", i),
+                PrettyName = string.format("Image Store~%d~Name", i),
+                Label = "Name",
+                ControlType = "Text",
+                PinStyle = "Both",
+                UserPin = true,
+                Size = Sizes.Text,
+                GridPos = 1
+            },{
+              Name = string.format("store.image.%d.data", i),
+              PrettyName = string.format("Image Store~%d~Data", i),
+              Label = "Base64 Image Data",
+              ControlType = "Text",
+              PinStyle = "Both",
+              UserPin = true,
+              Size = Sizes.Text,
+              GridPos = 2
+          }}
+        })
+    end
+    
+    for i = 1, props['Number of Issues'].Value do
+    
+        local tbl = {
+            ["PageName"] = string.format("Issue %d", i),
+    
+            ["Groupings"] = {{
+                ["Name"] = "Configuration",
+                ["Depth"] = 3,
+                ["Controls"] = {{
+                    Name = string.format("issue.%d.enable", i),
+                    PrettyName = string.format("Issue %d~Enable", i),
+                    Label = "Enable",
+                    ControlType = "Button",
+                    ButtonType = "Toggle",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 1
+                }, {
+                    Name = string.format("issue.%d.category", i),
+                    PrettyName = string.format("Issue %d~Category", i),
+                    Label = "Issue Category",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 2
+                }, {
+                    Name = string.format("issue.%d.description", i),
+                    PrettyName = string.format("Issue %d~Description", i),
+                    Label = "Description",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 3
+                }}
+            }}
+        }
+    
+        for stage = 1, props['Number of Stages'].Value do
+            table.insert(tbl.Groupings, {
+                ["Name"] = string.format("Stage %d", stage),
+                ["Depth"] = 7,
+                ["Controls"] = {{
+                    Name = string.format("issue.%d.stage.%d.message", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Message", i, stage),
+                    Label = "Message",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 1
+                }, {
+                    Name = string.format("issue.%d.stage.%d.prompt.action", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Action Prompt", i, stage),
+                    Label = "Action Prompt",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 2
+                }, {
+                    Name = string.format("issue.%d.stage.%d.prompt.resolution", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Resolution Prompt", i, stage),
+                    Label = "Resolution Prompt",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 3
+                }, {
+                    Name = string.format("issue.%d.stage.%d.image", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Image", i, stage),
+                    Label = "Image",
+                    ControlType = "Text",
+                    Style = "ComboBox",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 4
+                }, {
+                    Name = string.format("issue.%d.stage.%d.wait", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Wait Time", i, stage),
+                    Label = "Wait Time",
+                    ControlType = "Knob",
+                    ControlUnit = "Integer",
+                    Min = 0,
+                    Max = 60,
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 5
+                }, {
+                    Name = string.format("issue.%d.stage.%d.logicinput", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Logic Input", i, stage),
+                    -- Label = "Description",
+                    ControlType = "Indicator",
+                    IndicatorType = "Led",
+                    PinStyle = "Input",
+                    Label = "Logic Input",
+                    UserPin = true,
+                    Size = Sizes.LED,
+                    GridPos = 6
+                }, {
+                    Name = string.format("issue.%d.stage.%d.action.trigger", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Action Trigger", i, stage),
+                    -- Label = "Description",
+                    ControlType = "Button",
+                    ButtonType = "Trigger",
+                    PinStyle = "Output",
+                    Label = "Action Trigger",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 7
+                }}
+            })
+        end
+    
+        table.insert(master, tbl)
+    end
+    for i, page in ipairs(master) do
+      for i, grouping in ipairs(page.Groupings) do
+          for i, control in ipairs(grouping.Controls) do
+              table.insert(ctls, control)
+          end
+      end
+    end
+    return ctls
+end
+
+-- Layout of controls and graphics for the plugin UI to display
+function GetControlLayout(props)
+    local master = {}
+    
+    for i, tbl in ipairs(Master_Object) do
+        table.insert(master, tbl)
+    end
+    
+    for i = 1, props['Image Store Size'].Value do
+        table.insert(master[2].Groupings, {
+            ["Name"] = string.format("Image %d", i),
+            ["Depth"] = 2,
+            ["Controls"] = {{
+                Name = string.format("store.image.%d.name", i),
+                PrettyName = string.format("Image Store~%d~Name", i),
+                Label = "Name",
+                ControlType = "Text",
+                PinStyle = "Both",
+                UserPin = true,
+                Size = Sizes.Text,
+                GridPos = 1
+            },{
+              Name = string.format("store.image.%d.data", i),
+              PrettyName = string.format("Image Store~%d~Data", i),
+              Label = "Base64 Image Data",
+              ControlType = "Text",
+              PinStyle = "Both",
+              UserPin = true,
+              Size = Sizes.Text,
+              GridPos = 2
+          }}
+        })
+    end
+    
+    for i = 1, props['Number of Issues'].Value do
+    
+        local tbl = {
+            ["PageName"] = string.format("Issue %d", i),
+    
+            ["Groupings"] = {{
+                ["Name"] = "Configuration",
+                ["Depth"] = 3,
+                ["Controls"] = {{
+                    Name = string.format("issue.%d.enable", i),
+                    PrettyName = string.format("Issue %d~Enable", i),
+                    Label = "Enable",
+                    ControlType = "Button",
+                    ButtonType = "Toggle",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 1
+                }, {
+                    Name = string.format("issue.%d.category", i),
+                    PrettyName = string.format("Issue %d~Category", i),
+                    Label = "Issue Category",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 2
+                }, {
+                    Name = string.format("issue.%d.description", i),
+                    PrettyName = string.format("Issue %d~Description", i),
+                    Label = "Description",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 3
+                }}
+            }}
+        }
+    
+        for stage = 1, props['Number of Stages'].Value do
+            table.insert(tbl.Groupings, {
+                ["Name"] = string.format("Stage %d", stage),
+                ["Depth"] = 7,
+                ["Controls"] = {{
+                    Name = string.format("issue.%d.stage.%d.message", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Message", i, stage),
+                    Label = "Message",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 1
+                }, {
+                    Name = string.format("issue.%d.stage.%d.prompt.action", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Action Prompt", i, stage),
+                    Label = "Action Prompt",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 2
+                }, {
+                    Name = string.format("issue.%d.stage.%d.prompt.resolution", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Resolution Prompt", i, stage),
+                    Label = "Resolution Prompt",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 3
+                }, {
+                    Name = string.format("issue.%d.stage.%d.image", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Image", i, stage),
+                    Label = "Image",
+                    ControlType = "Text",
+                    Style = "ComboBox",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 4
+                }, {
+                    Name = string.format("issue.%d.stage.%d.wait", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Wait Time", i, stage),
+                    Label = "Wait Time",
+                    ControlType = "Knob",
+                    ControlUnit = "Integer",
+                    Min = 0,
+                    Max = 60,
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 5
+                }, {
+                    Name = string.format("issue.%d.stage.%d.logicinput", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Logic Input", i, stage),
+                    -- Label = "Description",
+                    ControlType = "Indicator",
+                    IndicatorType = "Led",
+                    PinStyle = "Input",
+                    Label = "Logic Input",
+                    UserPin = true,
+                    Size = Sizes.LED,
+                    GridPos = 6
+                }, {
+                    Name = string.format("issue.%d.stage.%d.action.trigger", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Action Trigger", i, stage),
+                    -- Label = "Description",
+                    ControlType = "Button",
+                    ButtonType = "Trigger",
+                    PinStyle = "Output",
+                    Label = "Action Trigger",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 7
+                }}
+            })
+        end
+    
+        table.insert(master, tbl)
+    end
+    local graphics, layout, control_slots = {}, {}, {}
+    
+    local page_index = props["page_index"].Value
+    
+    -- starting depth
+    local total_depth = 0
+    
+    -- dynamically create graphics boxes
+    for i, grouping in ipairs(master[page_index].Groupings) do
+    
+        total_depth = total_depth + control_depth
+    
+        depth = grouping.Depth
+    
+        len = string.len(grouping.Name)
+    
+        table.insert(graphics, {
+            Type = "GroupBox",
+            Fill = Colors.primary,
+            StrokeColor = Colors.stroke,
+            StrokeWidth = 2,
+            CornerRadius = 8,
+            HTextAlign = "Left",
+            Position = {
+                0,
+                total_depth
+            },
+            Size = {
+                width,
+                40 + (depth * control_depth) + ((depth - 1) * control_gap)
+            }
+        })
+    
+        -- generate control slots per group box depth and control_depth requirement
+    
+        grouping["Control_Slots"] = {}
+    
+        for n = 1, grouping.Depth do
+    
+            grouping["Control_Slots"][n] = ((total_depth + 25) + (control_depth * (n - 1)) + ((n - 1) * control_gap))
+    
+        end
+    
+        -- dynamically create groupbox labels
+        table.insert(graphics, {
+            Type = "Label",
+            Text = master[page_index].Groupings[i].Name,
+            -- Size = 11,
+            Color = {
+                255,
+                255,
+                255
+            },
+            Fill = Colors.heading,
+            StrokeWidth = 0,
+            CornerRadius = 4,
+            Position = {
+                15,
+                total_depth - 8
+            },
+            Size = {
+                len <= 12 and 90 or len <= 20 and 140 or len <= 30 and 170,
+                18
+            },
+            Font = "Montserrat",
+            FontStyle = "Medium"
+        })
+    
+        total_depth = total_depth + 40 + ((depth * control_depth) + ((depth - 1) * control_gap))
+    
+    end
+    
+    -- width of the group box minus borders
+    local box_width = (width - 60)
+    
+    for i, grouping in ipairs(master[page_index].Groupings) do
+    
+        local Slots = grouping.Control_Slots
+    
+        for _, ctl in ipairs(grouping.Controls) do
+    
+            local pos_x = nil
+            local pos_y = nil
+    
+            if (ctl.Width and (ctl.Width == "Full")) then
+                pos_x = 15
+                pos_y = (Slots[ctl.GridPos] + control_depth + control_gap)
+            else
+                if (ctl.Position) then
+                    pos_x = ctl.Position
+                else
+                    pos_x = (width - 15) - ctl.Size[1]
+                end
+                pos_y = Slots[ctl.GridPos]
+            end
+    
+            layout[ctl.Name] = {
+                PrettyName = ctl.PrettyName,
+                Legend = ctl.Legend,
+                Style = ctl.Style,
+                Position = {
+                    pos_x,
+                    pos_y
+                },
+                Size = ctl.Size,
+                Font = "Droid Sans",
+                FontSize = 8
+            }
+    
+            if ctl.Label then
+                table.insert(graphics, {
+                    Type = "Label",
+                    Text = ctl.Label,
+                    HTextAlign = "Left",
+                    Color = Colors.label,
+                    Font = "Droid Sans",
+                    Position = {
+                        15,
+                        (Slots[ctl.GridPos] ~= nil) and Slots[ctl.GridPos] or Slots[#Slots]
+                    },
+                    Size = {
+                        (ctl.Width == "Full") and (width - 30) or (width - 30) - ctl.Size[1],
+                        control_depth
+                    }
+                })
+            end
+    
+        end
+    
+    end
+    return layout, graphics
+end
+
+-- Start event based logic
+if Controls then
+    Issue = {
+        currentStage = 1
+    }
+    
+    function Issue:nextStage()
+        self.currentStage = self.currentStage + 1
+        return self
+    end
+    
+    function Issue:executeStage(stage)
+        progressTimer:Stop()
+        if (not self.stages[self.currentStage]) then
+            return self:unResolved()
+        end
+        print(string.format("Executing Stage [%d]", self.currentStage))
+    
+        clear()
+    
+        Controls.Message.String = stage.message
+    
+        -- subscribe to the callback
+        if (callback) then
+            Notifications.Unsubscribe(callback)
+        end
+        callback = Notifications.Subscribe(
+            string.format("au.com.tag.helpmatrix.callback.%s.%s", self.category, self.number), function(name, data)
+                print(string.format("Notification [%s]; Requesting Action [%s]; Wait Time [%d]", name, data.requiresAction,
+                    data.wait))
+    
+                -- setImage("")
+    
+                local actionTimer = Timer.New()
+                if data.requiresAction == true then
+                    actionTimer.EventHandler = function(t)
+                        t:Stop()
+                        Controls.Prompt.String = data.prompt
+                        setImage(stage.image)
+                        disableControls(false)
+                        Notifications.Publish(string.format("au.com.tag.helpmatrix.logicaction.%s.%s", self.category,
+                            self.number), {
+                            stage = self.currentStage
+                        })
+                        print("Waiting for User Confirmation...")
+                        if data.wait > 0 then
+                            print('!! [Starting Progress Timer]')
+                            progressTimer.EventHandler = function(t)
+    
+                                increment = ((1 / fps) / data.wait)
+                                Controls.Progress.Position = Controls.Progress.Position + increment
+                                if Controls.Progress.Position >= 1 then
+                                    t:Stop()
+                                    return print("!! [Progress Timer Complete]");
+                                end
+                            end
+                            progressTimer:Start((1 / fps))
+                        end
+                    end
+                else
+                    actionTimer.EventHandler = function(t)
+                        t:Stop()
+                        Controls.Prompt.String = data.prompt
+                        Timer.CallAfter(function()
+                            self:nextStage()
+                            self:executeStage(self.stages[self.currentStage])
+                            print("Auto-Executing Next Stage")
+                        end, 1)
+                    end
+                end
+                actionTimer:Start(1)
+            end)
+    
+        Controls["Next Stage"].EventHandler = function()
+            self:nextStage()
+            self:executeStage(self.stages[self.currentStage])
+            disableControls(true)
+        end
+    
+        Controls["Issue Resolved"].EventHandler = function()
+            self:resolved()
+            disableControls(true)
+        end
+    end
+    
+    function Issue:resolved()
+        progressTimer:Stop()
+        print(string.format('Issue Resolved at Stage [%d]', self.currentStage))
+        Controls.Message.String = Controls['Resolved Message'].String
+        clear()
+    end
+    
+    function Issue:unResolved()
+        print(string.format('Issue Unresolved at Stage [%d]', self.currentStage - 1))
+        Controls.Message.String = Controls['Unresolved Message'].String
+        clear()
+    end
+    
+    function Issue:new(o)
+        o = o or {} -- create object if user does not provide one
+        setmetatable(o, self)
+        self.__index = self
+        return o
+    end
+
+
+end
