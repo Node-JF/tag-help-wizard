@@ -8,90 +8,109 @@ function Issue:nextStage()
 end
 
 function Issue:executeStage(stage)
-    progressTimer:Stop()
-    if (not self.stages[self.currentStage]) then
-        return self:unResolved()
+    GStore.progressTimer:Stop()
+
+    if (not self.stages[self.currentStage]) then return self:unResolved() end
+
+    if Controls[string.format("issue.%d.stage.%d.skip", self.index, self.currentStage)].Boolean or
+      Controls[string.format("issue.%d.stage.%d.message", self.index, self.currentStage)].String == "" or 
+      Controls[string.format("issue.%d.stage.%d.prompt.action", self.index, self.currentStage)].String == "" or 
+      Controls[string.format("issue.%d.stage.%d.prompt.resolution", self.index, self.currentStage)].String == "" then
+        print(string.format("Skipping Stage [%d] - Configure Text Fields or Turn off 'Skip' Mode", self.currentStage))
+          self:nextStage()
+          self:executeStage(self.stages[self.currentStage])
+          disableControls(true)
+          return
     end
+
     print(string.format("Executing Stage [%d]", self.currentStage))
 
-    clear()
+    disableControls(true)
+    setPrompt()
+    setImage()
+    setProgress()
+    setMessage(stage.message)
 
-    Controls.Message.String = stage.message
+    local logicInput = Controls[string.format("issue.%d.stage.%d.logicinput", self.index, self.currentStage)].Boolean
 
-    -- subscribe to the callback
-    if (callback) then
-        Notifications.Unsubscribe(callback)
-    end
-    callback = Notifications.Subscribe(
-        string.format("au.com.tag.helpmatrix.callback.%s.%s", self.category, self.number), function(name, data)
-            print(string.format("Notification [%s]; Requesting Action [%s]; Wait Time [%d]", name, data.requiresAction,
-                data.wait))
+    GStore.actionTimer:Stop()
 
-            -- setImage("")
+    if logicInput == true then
 
-            local actionTimer = Timer.New()
-            if data.requiresAction == true then
-                actionTimer.EventHandler = function(t)
-                    t:Stop()
-                    Controls.Prompt.String = data.prompt
-                    setImage(stage.image)
-                    disableControls(false)
-                    Notifications.Publish(string.format("au.com.tag.helpmatrix.logicaction.%s.%s", self.category,
-                        self.number), {
-                        stage = self.currentStage
-                    })
-                    print("Waiting for User Confirmation...")
-                    if data.wait > 0 then
-                        print('!! [Starting Progress Timer]')
-                        progressTimer.EventHandler = function(t)
+        GStore.actionTimer.EventHandler = function(t)
+            t:Stop()
+            setPrompt(stage.actionPrompt)
+            local imageData = getImageByName(stage.image)
+            setImage(imageData)
+            Controls[string.format("issue.%d.stage.%d.action.trigger", self.index, self.currentStage)]:Trigger()
 
-                            increment = ((1 / fps) / data.wait)
-                            Controls.Progress.Position = Controls.Progress.Position + increment
-                            if Controls.Progress.Position >= 1 then
-                                t:Stop()
-                                return print("!! [Progress Timer Complete]");
-                            end
-                        end
-                        progressTimer:Start((1 / fps))
+            if stage.confirmationDelay > 0 then -- create utility function and reference GStore progressTimer correctly
+
+                local fps = 60
+                GStore.progressTimer.EventHandler = function(t)
+                    local currentPosition = Controls["wizard.controls.progress.stage"].Position
+                    local increment = ((1 / fps) / stage.confirmationDelay)
+                    setProgress(currentPosition + increment)
+                    if currentPosition >= 1 then
+                        t:Stop()
+                        disableControls(false)
+                        print("Waiting for User Confirmation...")
+                        print("!! [Progress Timer Complete]")
+                        return
                     end
                 end
-            else
-                actionTimer.EventHandler = function(t)
-                    t:Stop()
-                    Controls.Prompt.String = data.prompt
-                    Timer.CallAfter(function()
-                        self:nextStage()
-                        self:executeStage(self.stages[self.currentStage])
-                        print("Auto-Executing Next Stage")
-                    end, 1)
-                end
-            end
-            actionTimer:Start(1)
-        end)
 
-    Controls["Next Stage"].EventHandler = function()
+                print('!! [Starting Progress Timer]')
+                GStore.progressTimer:Start((1 / fps))
+
+            end
+        end
+
+    else
+
+        GStore.actionTimer.EventHandler = function(t)
+            t:Stop()
+            setPrompt(stage.resolutionPrompt)
+            Timer.CallAfter(function()
+                self:nextStage()
+                self:executeStage(self.stages[self.currentStage])
+                print("Auto-Executing Next Stage")
+            end, 1)
+        end
+
+    end
+
+    GStore.actionTimer:Start(stage.actionDelay)
+
+    Controls["wizard.controls.stage.next"].EventHandler = function()
         self:nextStage()
         self:executeStage(self.stages[self.currentStage])
         disableControls(true)
     end
 
-    Controls["Issue Resolved"].EventHandler = function()
+    Controls["wizard.controls.issue.resolved"].EventHandler = function()
         self:resolved()
         disableControls(true)
     end
 end
 
 function Issue:resolved()
-    progressTimer:Stop()
+    GStore.progressTimer:Stop()
     print(string.format('Issue Resolved at Stage [%d]', self.currentStage))
-    Controls.Message.String = Controls['Resolved Message'].String
-    clear()
+    setMessage(Controls["wizard.config.message.resolved"].String)
+    disableControls(true)
+    setPrompt()
+    setImage()
+    setProgress()
 end
 
 function Issue:unResolved()
     print(string.format('Issue Unresolved at Stage [%d]', self.currentStage - 1))
-    Controls.Message.String = Controls['Unresolved Message'].String
-    clear()
+    setMessage(Controls["wizard.config.message.unresolved"].String)
+    disableControls(true)
+    setPrompt()
+    setImage()
+    setProgress()
 end
 
 function Issue:new(o)

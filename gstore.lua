@@ -15,9 +15,9 @@ Colors = {
 Sizes = {
     ["Button"] = {36, control_depth},
     ["Text"] = {(width - 30) / 2, control_depth},
-    ["Status"] = {width - 30, control_depth},
+    ["Status"] = {width - 30, (control_depth * 2) + (control_gap * 1)},
     ["LED"] = {16, control_depth},
-    ["ListBox"] = {width - 30, (control_depth * 5) + (control_gap * 4)},
+    ["ListBox"] = {width - 30, (control_depth * 6) + (control_gap * 5)},
     ["Image"] = {width - 30, (control_depth * 6) + (control_gap * 5)}
 }
 
@@ -50,22 +50,33 @@ Master_Object = {{
 
     }, {
         ["Name"] = "Controls",
-        ["Depth"] = 26,
+        ["Depth"] = 28,
         ["Controls"] = {{
+            Name = "wizard.controls.compile",
+            GetPrettyName = "Wizard Controls Compile",
+            Label = "Compile Issues =>",
+            ControlType = "Button",
+            ButtonType = "Trigger",
+            Icon = "Refresh",
+            Size = Sizes.Button,
+            GridPos = 1
+        },{
             Name = "wizard.controls.issue.type",
-            Label = "Issue Category",
+            GetPrettyName = "Wizard Controls Issue Type",
+            Label = "Issue Type",
             ControlType = "Text",
             Style = "ComboBox",
             Size = Sizes.Text,
-            GridPos = 1
+            GridPos = 3
         }, {
             Name = "wizard.controls.issue.list",
+            GetPrettyName = "Wizard Controls Issue List",
             Label = "Issue List",
             ControlType = "Text",
             Style = "ListBox",
             Width = "Full",
             Size = Sizes.ListBox,
-            GridPos = 3
+            GridPos = 4
         }, {
             Name = "wizard.controls.start",
             PrettyName = "Wizard~Controls~Start",
@@ -75,7 +86,7 @@ Master_Object = {{
             PinStyle = "Both",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 9
+            GridPos = 11
         }, {
             Name = "wizard.controls.message",
             PrettyName = "Wizard~Controls~User Message",
@@ -86,7 +97,7 @@ Master_Object = {{
             UserPin = true,
             Size = Sizes.Status,
             Width = "Full",
-            GridPos = 10
+            GridPos = 12
         }, {
             Name = "wizard.controls.prompt",
             PrettyName = "Wizard~Controls~User Prompt",
@@ -97,26 +108,27 @@ Master_Object = {{
             UserPin = true,
             Size = Sizes.Status,
             Width = "Full",
-            GridPos = 13
+            GridPos = 15
         }, {
             Name = "wizard.controls.image",
             Label = "Image",
             ControlType = "Button",
             ButtonType = "Toggle",
-            PinStyle = "Both",
-            UserPin = true,
             Size = Sizes.Image,
             Width = "Full",
-            GridPos = 16
+            GridPos = 18
         }, {
-            Name = "wizard.controls.progress",
+            Name = "wizard.controls.progress.stage",
+            PrettyName = "Wizard~Controls~Stage Progress",
             Label = "Progress",
             ControlType = "Knob",
-            ControlUnit = "Position",
+            ControlUnit = "Percent",
+            Min = 0,
+            Max = 100,
             PinStyle = "Output",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 24
+            GridPos = 26
         }, {
             Name = "wizard.controls.stage.next",
             PrettyName = "Wizard~Controls~Next Stage",
@@ -127,7 +139,7 @@ Master_Object = {{
             PinStyle = "Both",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 25
+            GridPos = 27
         }, {
             Name = "wizard.controls.issue.resolved",
             PrettyName = "Wizard~Controls~Issue Resolved",
@@ -138,7 +150,7 @@ Master_Object = {{
             PinStyle = "Both",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 26
+            GridPos = 28
         }}
     }}
 }, {

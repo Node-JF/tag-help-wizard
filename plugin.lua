@@ -1,9 +1,8 @@
--- Basic Framework Plugin
--- by QSC
--- October 2020
 -- Information block for the plugin
 --[[ #include "info.lua" ]]
+
 --[[ #include "gstore.lua" ]]
+
 -- Define the color of the plugin object in the design
 function GetColor(props)
     return Colors.primary
@@ -80,9 +79,16 @@ end
 
 -- Start event based logic
 if Controls then
+
+    rapidjson = require('rapidjson')
+
     --[[ #include "classes/issue_class.lua" ]]
 
     --[[ #include "runtime/utility_functions.lua" ]]
 
-    --[[ #include "runtime.lua" ]]
+    --[[ #include "runtime/main.lua" ]]
+
+    --[[ #include "runtime/eventhandlers.lua" ]]
+
+    initialize()
 end

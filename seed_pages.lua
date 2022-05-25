@@ -73,8 +73,19 @@ for i = 1, props['Number of Issues'].Value do
     for stage = 1, props['Number of Stages'].Value do
         table.insert(tbl.Groupings, {
             ["Name"] = string.format("Stage %d", stage),
-            ["Depth"] = 7,
+            ["Depth"] = 9,
             ["Controls"] = {{
+                Name = string.format("issue.%d.stage.%d.skip", i, stage),
+                PrettyName = string.format("Issue %d~Stage %d~Skip Stage", i, stage),
+                ControlType = "Button",
+                ButtonType = "Toggle",
+                PinStyle = "Output",
+                Label = "Manually Skip this Stage",
+                Legend = "Skip",
+                UserPin = true,
+                Size = Sizes.Button,
+                GridPos = 1
+            }, {
                 Name = string.format("issue.%d.stage.%d.message", i, stage),
                 PrettyName = string.format("Issue %d~Stage %d~Message", i, stage),
                 Label = "Message",
@@ -82,7 +93,7 @@ for i = 1, props['Number of Issues'].Value do
                 PinStyle = "Both",
                 UserPin = true,
                 Size = Sizes.Text,
-                GridPos = 1
+                GridPos = 2
             }, {
                 Name = string.format("issue.%d.stage.%d.prompt.action", i, stage),
                 PrettyName = string.format("Issue %d~Stage %d~Action Prompt", i, stage),
@@ -91,7 +102,7 @@ for i = 1, props['Number of Issues'].Value do
                 PinStyle = "Both",
                 UserPin = true,
                 Size = Sizes.Text,
-                GridPos = 2
+                GridPos = 3
             }, {
                 Name = string.format("issue.%d.stage.%d.prompt.resolution", i, stage),
                 PrettyName = string.format("Issue %d~Stage %d~Resolution Prompt", i, stage),
@@ -100,7 +111,7 @@ for i = 1, props['Number of Issues'].Value do
                 PinStyle = "Both",
                 UserPin = true,
                 Size = Sizes.Text,
-                GridPos = 3
+                GridPos = 4
             }, {
                 Name = string.format("issue.%d.stage.%d.image", i, stage),
                 PrettyName = string.format("Issue %d~Stage %d~Image", i, stage),
@@ -110,10 +121,22 @@ for i = 1, props['Number of Issues'].Value do
                 PinStyle = "Both",
                 UserPin = true,
                 Size = Sizes.Text,
-                GridPos = 4
+                GridPos = 5
             }, {
-                Name = string.format("issue.%d.stage.%d.wait", i, stage),
-                PrettyName = string.format("Issue %d~Stage %d~Wait Time", i, stage),
+                Name = string.format("issue.%d.stage.%d.delay.action", i, stage),
+                PrettyName = string.format("Issue %d~Stage %d~Action Delay", i, stage),
+                Label = "Delay Between Steps",
+                ControlType = "Knob",
+                ControlUnit = "Integer",
+                Min = 1,
+                Max = 10,
+                PinStyle = "Both",
+                UserPin = true,
+                Size = Sizes.Button,
+                GridPos = 6
+            }, {
+                Name = string.format("issue.%d.stage.%d.delay.confirmation", i, stage),
+                PrettyName = string.format("Issue %d~Stage %d~Confirmation Delay", i, stage),
                 Label = "Wait Time",
                 ControlType = "Knob",
                 ControlUnit = "Integer",
@@ -122,29 +145,27 @@ for i = 1, props['Number of Issues'].Value do
                 PinStyle = "Both",
                 UserPin = true,
                 Size = Sizes.Button,
-                GridPos = 5
+                GridPos = 7
             }, {
                 Name = string.format("issue.%d.stage.%d.logicinput", i, stage),
                 PrettyName = string.format("Issue %d~Stage %d~Logic Input", i, stage),
-                -- Label = "Description",
-                ControlType = "Indicator",
-                IndicatorType = "Led",
+                ControlType = "Button",
+                ButtonType = "Toggle",
                 PinStyle = "Input",
                 Label = "Logic Input",
                 UserPin = true,
-                Size = Sizes.LED,
-                GridPos = 6
+                Size = Sizes.Button,
+                GridPos = 8
             }, {
                 Name = string.format("issue.%d.stage.%d.action.trigger", i, stage),
                 PrettyName = string.format("Issue %d~Stage %d~Action Trigger", i, stage),
-                -- Label = "Description",
                 ControlType = "Button",
                 ButtonType = "Trigger",
                 PinStyle = "Output",
                 Label = "Action Trigger",
                 UserPin = true,
                 Size = Sizes.Button,
-                GridPos = 7
+                GridPos = 9
             }}
         })
     end
