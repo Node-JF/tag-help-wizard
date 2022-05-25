@@ -13,14 +13,14 @@ function Issue:executeStage(stage)
     if (not self.stages[self.currentStage]) then return self:unResolved() end
 
     if Controls[string.format("issue.%d.stage.%d.skip", self.index, self.currentStage)].Boolean or
-      Controls[string.format("issue.%d.stage.%d.message", self.index, self.currentStage)].String == "" or 
-      Controls[string.format("issue.%d.stage.%d.prompt.action", self.index, self.currentStage)].String == "" or 
-      Controls[string.format("issue.%d.stage.%d.prompt.resolution", self.index, self.currentStage)].String == "" then
+        Controls[string.format("issue.%d.stage.%d.message", self.index, self.currentStage)].String == "" or
+        Controls[string.format("issue.%d.stage.%d.prompt.action", self.index, self.currentStage)].String == "" or
+        Controls[string.format("issue.%d.stage.%d.prompt.resolution", self.index, self.currentStage)].String == "" then
         print(string.format("Skipping Stage [%d] - Configure Text Fields or Turn off 'Skip' Mode", self.currentStage))
-          self:nextStage()
-          self:executeStage(self.stages[self.currentStage])
-          disableControls(true)
-          return
+        self:nextStage()
+        self:executeStage(self.stages[self.currentStage])
+        disableControls(true)
+        return
     end
 
     print(string.format("Executing Stage [%d]", self.currentStage))
@@ -62,7 +62,8 @@ function Issue:executeStage(stage)
 
                 print('!! [Starting Progress Timer]')
                 GStore.progressTimer:Start((1 / fps))
-
+            else
+                disableControls(false)
             end
         end
 
@@ -75,7 +76,7 @@ function Issue:executeStage(stage)
                 self:nextStage()
                 self:executeStage(self.stages[self.currentStage])
                 print("Auto-Executing Next Stage")
-            end, 1)
+            end, 1) -- needs to be a custom delay, disappears before user can read the resolution message.
         end
 
     end

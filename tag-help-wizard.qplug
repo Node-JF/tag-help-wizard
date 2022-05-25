@@ -2,7 +2,7 @@
 PluginInfo = {
   Name = "TAG~Help Wizard",
   Version = "1.0",
-  BuildVersion = "1.0.0.4",
+  BuildVersion = "1.0.0.5",
   Id = "1c3e2ee3-a45f-4ffb-b894-8ea26a3d385b",
   Author = "Jason Foord (TAG)",
   Description = "Configure help issues that can assist your users with resolving problems."
@@ -937,14 +937,14 @@ if Controls then
         if (not self.stages[self.currentStage]) then return self:unResolved() end
     
         if Controls[string.format("issue.%d.stage.%d.skip", self.index, self.currentStage)].Boolean or
-          Controls[string.format("issue.%d.stage.%d.message", self.index, self.currentStage)].String == "" or 
-          Controls[string.format("issue.%d.stage.%d.prompt.action", self.index, self.currentStage)].String == "" or 
-          Controls[string.format("issue.%d.stage.%d.prompt.resolution", self.index, self.currentStage)].String == "" then
+            Controls[string.format("issue.%d.stage.%d.message", self.index, self.currentStage)].String == "" or
+            Controls[string.format("issue.%d.stage.%d.prompt.action", self.index, self.currentStage)].String == "" or
+            Controls[string.format("issue.%d.stage.%d.prompt.resolution", self.index, self.currentStage)].String == "" then
             print(string.format("Skipping Stage [%d] - Configure Text Fields or Turn off 'Skip' Mode", self.currentStage))
-              self:nextStage()
-              self:executeStage(self.stages[self.currentStage])
-              disableControls(true)
-              return
+            self:nextStage()
+            self:executeStage(self.stages[self.currentStage])
+            disableControls(true)
+            return
         end
     
         print(string.format("Executing Stage [%d]", self.currentStage))
@@ -986,7 +986,8 @@ if Controls then
     
                     print('!! [Starting Progress Timer]')
                     GStore.progressTimer:Start((1 / fps))
-    
+                else
+                    disableControls(false)
                 end
             end
     
@@ -999,7 +1000,7 @@ if Controls then
                     self:nextStage()
                     self:executeStage(self.stages[self.currentStage])
                     print("Auto-Executing Next Stage")
-                end, 1)
+                end, 1) -- needs to be a custom delay, disappears before user can read the resolution message.
             end
     
         end
