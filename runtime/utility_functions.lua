@@ -35,6 +35,11 @@ function setProgress(value)
     Controls["wizard.controls.progress.stage"].Position = value -- MAKE PERCENT
 end
 
+function setRunning(state)
+    local state = state or false
+    Controls["wizard.controls.isrunning"].Boolean = state
+end
+
 function setCategoryChoices()
     local choices = {}
     for category, list in pairs(GStore.issues) do table.insert(choices, category) end

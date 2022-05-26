@@ -2,7 +2,7 @@
 PluginInfo = {
   Name = "TAG~Help Wizard",
   Version = "1.0",
-  BuildVersion = "1.0.0.5",
+  BuildVersion = "1.0.0.12",
   Id = "1c3e2ee3-a45f-4ffb-b894-8ea26a3d385b",
   Author = "Jason Foord (TAG)",
   Description = "Configure help issues that can assist your users with resolving problems."
@@ -60,29 +60,35 @@ Master_Object = {{
 
     }, {
         ["Name"] = "Controls",
-        ["Depth"] = 28,
+        ["Depth"] = 29,
         ["Controls"] = {{
             Name = "wizard.controls.compile",
-            GetPrettyName = "Wizard Controls Compile",
+            PrettyName = "Wizard~Controls~Compile",
             Label = "Compile Issues =>",
             ControlType = "Button",
             ButtonType = "Trigger",
+            PinStyle = "Both",
+            UserPin = true,
             Icon = "Refresh",
             Size = Sizes.Button,
             GridPos = 1
         },{
             Name = "wizard.controls.issue.type",
-            GetPrettyName = "Wizard Controls Issue Type",
+            PrettyName = "Wizard~Controls~Issue Type",
             Label = "Issue Type",
             ControlType = "Text",
+            PinStyle = "Output",
+            UserPin = true,
             Style = "ComboBox",
             Size = Sizes.Text,
             GridPos = 3
         }, {
             Name = "wizard.controls.issue.list",
-            GetPrettyName = "Wizard Controls Issue List",
+            PrettyName = "Wizard~Controls~Issue List",
             Label = "Issue List",
             ControlType = "Text",
+            PinStyle = "Output",
+            UserPin = true,
             Style = "ListBox",
             Width = "Full",
             Size = Sizes.ListBox,
@@ -128,6 +134,16 @@ Master_Object = {{
             Width = "Full",
             GridPos = 18
         }, {
+            Name = "wizard.controls.isrunning",
+            PrettyName = "Wizard~Controls~Is Running",
+            Label = "Wizard Is Running",
+            ControlType = "Indicator",
+            IndicatorType = "Led",
+            PinStyle = "Output",
+            UserPin = true,
+            Size = Sizes.LED,
+            GridPos = 26
+        }, {
             Name = "wizard.controls.progress.stage",
             PrettyName = "Wizard~Controls~Stage Progress",
             Label = "Progress",
@@ -138,7 +154,7 @@ Master_Object = {{
             PinStyle = "Output",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 26
+            GridPos = 27
         }, {
             Name = "wizard.controls.stage.next",
             PrettyName = "Wizard~Controls~Next Stage",
@@ -149,7 +165,7 @@ Master_Object = {{
             PinStyle = "Both",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 27
+            GridPos = 28
         }, {
             Name = "wizard.controls.issue.resolved",
             PrettyName = "Wizard~Controls~Issue Resolved",
@@ -160,7 +176,7 @@ Master_Object = {{
             PinStyle = "Both",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 28
+            GridPos = 29
         }}
     }}
 }, {
@@ -933,6 +949,7 @@ if Controls then
     
     function Issue:executeStage(stage)
         GStore.progressTimer:Stop()
+        setRunning(true)
     
         if (not self.stages[self.currentStage]) then return self:unResolved() end
     
@@ -1027,6 +1044,7 @@ if Controls then
         setPrompt()
         setImage()
         setProgress()
+        Timer.CallAfter(function() setRunning(false) end, 3)
     end
     
     function Issue:unResolved()
@@ -1036,6 +1054,7 @@ if Controls then
         setPrompt()
         setImage()
         setProgress()
+        Timer.CallAfter(function() setRunning(false) end, 3)
     end
     
     function Issue:new(o)
@@ -1080,6 +1099,11 @@ if Controls then
     function setProgress(value)
         local value = value or 0
         Controls["wizard.controls.progress.stage"].Position = value -- MAKE PERCENT
+    end
+    
+    function setRunning(state)
+        local state = state or false
+        Controls["wizard.controls.isrunning"].Boolean = state
     end
     
     function setCategoryChoices()
@@ -1158,8 +1182,10 @@ if Controls then
         setImage()
         setProgress()
         setMessage()
+        setRunning()
         setDefaultCustomMessages()
         GStore.progressTimer:Stop()
+        GStore.actionTimer:Stop()
         compileImageStore()
         getIssues()
         resetIssueType()

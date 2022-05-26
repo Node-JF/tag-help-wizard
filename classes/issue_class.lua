@@ -9,6 +9,7 @@ end
 
 function Issue:executeStage(stage)
     GStore.progressTimer:Stop()
+    setRunning(true)
 
     if (not self.stages[self.currentStage]) then return self:unResolved() end
 
@@ -103,6 +104,7 @@ function Issue:resolved()
     setPrompt()
     setImage()
     setProgress()
+    Timer.CallAfter(function() setRunning(false) end, 3)
 end
 
 function Issue:unResolved()
@@ -112,6 +114,7 @@ function Issue:unResolved()
     setPrompt()
     setImage()
     setProgress()
+    Timer.CallAfter(function() setRunning(false) end, 3)
 end
 
 function Issue:new(o)
