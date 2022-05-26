@@ -50,7 +50,7 @@ Master_Object = {{
 
     }, {
         ["Name"] = "Controls",
-        ["Depth"] = 29,
+        ["Depth"] = 28,
         ["Controls"] = {{
             Name = "wizard.controls.compile",
             PrettyName = "Wizard~Controls~Compile",
@@ -124,16 +124,6 @@ Master_Object = {{
             Width = "Full",
             GridPos = 18
         }, {
-            Name = "wizard.controls.isrunning",
-            PrettyName = "Wizard~Controls~Is Running",
-            Label = "Wizard Is Running",
-            ControlType = "Indicator",
-            IndicatorType = "Led",
-            PinStyle = "Output",
-            UserPin = true,
-            Size = Sizes.LED,
-            GridPos = 26
-        }, {
             Name = "wizard.controls.progress.stage",
             PrettyName = "Wizard~Controls~Stage Progress",
             Label = "Progress",
@@ -144,7 +134,7 @@ Master_Object = {{
             PinStyle = "Output",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 27
+            GridPos = 26
         }, {
             Name = "wizard.controls.stage.next",
             PrettyName = "Wizard~Controls~Next Stage",
@@ -155,7 +145,7 @@ Master_Object = {{
             PinStyle = "Both",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 28
+            GridPos = 27
         }, {
             Name = "wizard.controls.issue.resolved",
             PrettyName = "Wizard~Controls~Issue Resolved",
@@ -166,7 +156,41 @@ Master_Object = {{
             PinStyle = "Both",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 29
+            GridPos = 28
+        }}
+    }, {
+        ["Name"] = "Events",
+        ["Depth"] = 3,
+        ["Controls"] = {{
+            Name = "wizard.events.isrunning",
+            PrettyName = "Wizard~Events~Is Running",
+            Label = "Wizard Is Running",
+            ControlType = "Indicator",
+            IndicatorType = "Led",
+            PinStyle = "Output",
+            UserPin = true,
+            Size = Sizes.LED,
+            GridPos = 1
+        }, {
+            Name = "wizard.events.trigger.resolved",
+            PrettyName = "Wizard~Events~Issue Resolved Trigger",
+            Label = "Issue Resolved Trigger",
+            ControlType = "Button",
+            ButtonType = "Trigger",
+            PinStyle = "Output",
+            UserPin = true,
+            Size = Sizes.Button,
+            GridPos = 2
+        }, {
+            Name = "wizard.events.trigger.unresolved",
+            PrettyName = "Wizard~Events~Issue Unresolved Trigger",
+            Label = "Issue Unresolved Trigger",
+            ControlType = "Button",
+            ButtonType = "Trigger",
+            PinStyle = "Output",
+            UserPin = true,
+            Size = Sizes.Button,
+            GridPos = 3
         }}
     }}
 }, {

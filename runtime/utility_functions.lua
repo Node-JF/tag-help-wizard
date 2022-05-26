@@ -32,12 +32,12 @@ end
 
 function setProgress(value)
     local value = value or 0
-    Controls["wizard.controls.progress.stage"].Position = value -- MAKE PERCENT
+    Controls["wizard.controls.progress.stage"].Position = value
 end
 
 function setRunning(state)
     local state = state or false
-    Controls["wizard.controls.isrunning"].Boolean = state
+    Controls["wizard.events.isrunning"].Boolean = state
 end
 
 function setCategoryChoices()

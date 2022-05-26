@@ -1,8 +1,8 @@
 -- Information block for the plugin
 PluginInfo = {
   Name = "TAG~Help Wizard",
-  Version = "1.0",
-  BuildVersion = "1.0.0.12",
+  Version = "1.2",
+  BuildVersion = "1.1.0.6",
   Id = "1c3e2ee3-a45f-4ffb-b894-8ea26a3d385b",
   Author = "Jason Foord (TAG)",
   Description = "Configure help issues that can assist your users with resolving problems."
@@ -60,7 +60,7 @@ Master_Object = {{
 
     }, {
         ["Name"] = "Controls",
-        ["Depth"] = 29,
+        ["Depth"] = 28,
         ["Controls"] = {{
             Name = "wizard.controls.compile",
             PrettyName = "Wizard~Controls~Compile",
@@ -134,16 +134,6 @@ Master_Object = {{
             Width = "Full",
             GridPos = 18
         }, {
-            Name = "wizard.controls.isrunning",
-            PrettyName = "Wizard~Controls~Is Running",
-            Label = "Wizard Is Running",
-            ControlType = "Indicator",
-            IndicatorType = "Led",
-            PinStyle = "Output",
-            UserPin = true,
-            Size = Sizes.LED,
-            GridPos = 26
-        }, {
             Name = "wizard.controls.progress.stage",
             PrettyName = "Wizard~Controls~Stage Progress",
             Label = "Progress",
@@ -154,7 +144,7 @@ Master_Object = {{
             PinStyle = "Output",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 27
+            GridPos = 26
         }, {
             Name = "wizard.controls.stage.next",
             PrettyName = "Wizard~Controls~Next Stage",
@@ -165,7 +155,7 @@ Master_Object = {{
             PinStyle = "Both",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 28
+            GridPos = 27
         }, {
             Name = "wizard.controls.issue.resolved",
             PrettyName = "Wizard~Controls~Issue Resolved",
@@ -176,7 +166,41 @@ Master_Object = {{
             PinStyle = "Both",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 29
+            GridPos = 28
+        }}
+    }, {
+        ["Name"] = "Events",
+        ["Depth"] = 3,
+        ["Controls"] = {{
+            Name = "wizard.events.isrunning",
+            PrettyName = "Wizard~Events~Is Running",
+            Label = "Wizard Is Running",
+            ControlType = "Indicator",
+            IndicatorType = "Led",
+            PinStyle = "Output",
+            UserPin = true,
+            Size = Sizes.LED,
+            GridPos = 1
+        }, {
+            Name = "wizard.events.trigger.resolved",
+            PrettyName = "Wizard~Events~Issue Resolved Trigger",
+            Label = "Issue Resolved Trigger",
+            ControlType = "Button",
+            ButtonType = "Trigger",
+            PinStyle = "Output",
+            UserPin = true,
+            Size = Sizes.Button,
+            GridPos = 2
+        }, {
+            Name = "wizard.events.trigger.unresolved",
+            PrettyName = "Wizard~Events~Issue Unresolved Trigger",
+            Label = "Issue Unresolved Trigger",
+            ControlType = "Button",
+            ButtonType = "Trigger",
+            PinStyle = "Output",
+            UserPin = true,
+            Size = Sizes.Button,
+            GridPos = 3
         }}
     }}
 }, {
@@ -954,9 +978,9 @@ if Controls then
         if (not self.stages[self.currentStage]) then return self:unResolved() end
     
         if Controls[string.format("issue.%d.stage.%d.skip", self.index, self.currentStage)].Boolean or
-            Controls[string.format("issue.%d.stage.%d.message", self.index, self.currentStage)].String == "" or
-            Controls[string.format("issue.%d.stage.%d.prompt.action", self.index, self.currentStage)].String == "" or
-            Controls[string.format("issue.%d.stage.%d.prompt.resolution", self.index, self.currentStage)].String == "" then
+        Controls[string.format("issue.%d.stage.%d.message", self.index, self.currentStage)].String == "" or
+        Controls[string.format("issue.%d.stage.%d.prompt.action", self.index, self.currentStage)].String == "" or
+        Controls[string.format("issue.%d.stage.%d.prompt.resolution", self.index, self.currentStage)].String == "" then
             print(string.format("Skipping Stage [%d] - Configure Text Fields or Turn off 'Skip' Mode", self.currentStage))
             self:nextStage()
             self:executeStage(self.stages[self.currentStage])
@@ -972,11 +996,11 @@ if Controls then
         setProgress()
         setMessage(stage.message)
     
-        local logicInput = Controls[string.format("issue.%d.stage.%d.logicinput", self.index, self.currentStage)].Boolean
+        local logicInput = Controls[string.format("issue.%d.stage.%d.logicinput", self.index, self.currentStage)]
     
         GStore.actionTimer:Stop()
     
-        if logicInput == true then
+        if logicInput.Boolean == true then
     
             GStore.actionTimer.EventHandler = function(t)
                 t:Stop()
@@ -992,11 +1016,21 @@ if Controls then
                         local currentPosition = Controls["wizard.controls.progress.stage"].Position
                         local increment = ((1 / fps) / stage.confirmationDelay)
                         setProgress(currentPosition + increment)
+    
+                        if logicInput.Boolean == false then
+                            t:Stop()
+                            setProgress(1)
+                            disableControls(false)
+                            print("!! [Logic Indicates Issue if Fixed - Setting Progress to Complete]")
+                            print("Waiting for User Confirmation...")
+                            return
+                        end
+    
                         if currentPosition >= 1 then
                             t:Stop()
                             disableControls(false)
-                            print("Waiting for User Confirmation...")
                             print("!! [Progress Timer Complete]")
+                            print("Waiting for User Confirmation...")
                             return
                         end
                     end
@@ -1044,6 +1078,7 @@ if Controls then
         setPrompt()
         setImage()
         setProgress()
+        Controls["wizard.events.trigger.resolved"]:Trigger()
         Timer.CallAfter(function() setRunning(false) end, 3)
     end
     
@@ -1054,6 +1089,7 @@ if Controls then
         setPrompt()
         setImage()
         setProgress()
+        Controls["wizard.events.trigger.unresolved"]:Trigger()
         Timer.CallAfter(function() setRunning(false) end, 3)
     end
     
@@ -1098,12 +1134,12 @@ if Controls then
     
     function setProgress(value)
         local value = value or 0
-        Controls["wizard.controls.progress.stage"].Position = value -- MAKE PERCENT
+        Controls["wizard.controls.progress.stage"].Position = value
     end
     
     function setRunning(state)
         local state = state or false
-        Controls["wizard.controls.isrunning"].Boolean = state
+        Controls["wizard.events.isrunning"].Boolean = state
     end
     
     function setCategoryChoices()

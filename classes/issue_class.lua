@@ -14,9 +14,9 @@ function Issue:executeStage(stage)
     if (not self.stages[self.currentStage]) then return self:unResolved() end
 
     if Controls[string.format("issue.%d.stage.%d.skip", self.index, self.currentStage)].Boolean or
-        Controls[string.format("issue.%d.stage.%d.message", self.index, self.currentStage)].String == "" or
-        Controls[string.format("issue.%d.stage.%d.prompt.action", self.index, self.currentStage)].String == "" or
-        Controls[string.format("issue.%d.stage.%d.prompt.resolution", self.index, self.currentStage)].String == "" then
+    Controls[string.format("issue.%d.stage.%d.message", self.index, self.currentStage)].String == "" or
+    Controls[string.format("issue.%d.stage.%d.prompt.action", self.index, self.currentStage)].String == "" or
+    Controls[string.format("issue.%d.stage.%d.prompt.resolution", self.index, self.currentStage)].String == "" then
         print(string.format("Skipping Stage [%d] - Configure Text Fields or Turn off 'Skip' Mode", self.currentStage))
         self:nextStage()
         self:executeStage(self.stages[self.currentStage])
@@ -32,11 +32,11 @@ function Issue:executeStage(stage)
     setProgress()
     setMessage(stage.message)
 
-    local logicInput = Controls[string.format("issue.%d.stage.%d.logicinput", self.index, self.currentStage)].Boolean
+    local logicInput = Controls[string.format("issue.%d.stage.%d.logicinput", self.index, self.currentStage)]
 
     GStore.actionTimer:Stop()
 
-    if logicInput == true then
+    if logicInput.Boolean == true then
 
         GStore.actionTimer.EventHandler = function(t)
             t:Stop()
@@ -52,11 +52,21 @@ function Issue:executeStage(stage)
                     local currentPosition = Controls["wizard.controls.progress.stage"].Position
                     local increment = ((1 / fps) / stage.confirmationDelay)
                     setProgress(currentPosition + increment)
+
+                    if logicInput.Boolean == false then
+                        t:Stop()
+                        setProgress(1)
+                        disableControls(false)
+                        print("!! [Logic Indicates Issue if Fixed - Setting Progress to Complete]")
+                        print("Waiting for User Confirmation...")
+                        return
+                    end
+
                     if currentPosition >= 1 then
                         t:Stop()
                         disableControls(false)
-                        print("Waiting for User Confirmation...")
                         print("!! [Progress Timer Complete]")
+                        print("Waiting for User Confirmation...")
                         return
                     end
                 end
@@ -104,6 +114,7 @@ function Issue:resolved()
     setPrompt()
     setImage()
     setProgress()
+    Controls["wizard.events.trigger.resolved"]:Trigger()
     Timer.CallAfter(function() setRunning(false) end, 3)
 end
 
@@ -114,6 +125,7 @@ function Issue:unResolved()
     setPrompt()
     setImage()
     setProgress()
+    Controls["wizard.events.trigger.unresolved"]:Trigger()
     Timer.CallAfter(function() setRunning(false) end, 3)
 end
 
