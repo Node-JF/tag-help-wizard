@@ -5,7 +5,8 @@ end
 
 for issue = 1, Properties["Number of Issues"].Value do
   for stage = 1, Properties["Number of Stages"].Value do
-      Controls[string.format("issue.%d.stage.%d.image", issue, stage)].EventHandler = validateImages
+      Controls[string.format("issue.%d.stage.%d.image", issue, stage)].EventHandler = validateChoices
+      Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].EventHandler = validateChoices
   end
 end
 

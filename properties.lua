@@ -23,6 +23,21 @@ table.insert(props, {
 })
 
 table.insert(props, {
+  Name = "Use Shared Stages",
+  Type = "enum",
+  Choices = {"Yes", "No"},
+  Value = "No"
+})
+
+table.insert(props, {
+  Name = "Number of Shared Stages",
+  Type = "integer",
+  Min = 2,
+  Max = 100,
+  Value = 2
+})
+
+table.insert(props, {
   Name = "Confirmation Timeout",
   Type = "integer",
   Min = 15,

@@ -1,8 +1,8 @@
 -- Information block for the plugin
 PluginInfo = {
   Name = "TAG~Help Wizard",
-  Version = "1.3",
-  BuildVersion = "1.2.0.1",
+  Version = "1.4",
+  BuildVersion = "1.2.0.18",
   Id = "1c3e2ee3-a45f-4ffb-b894-8ea26a3d385b",
   Author = "Jason Foord (TAG)",
   Description = "Configure help issues that can assist your users with resolving problems."
@@ -229,6 +229,15 @@ function GetPages(props)
         table.insert(master, tbl)
     end
     
+    if props["Use Shared Stages"].Value == "Yes" then
+        table.insert(master, {
+    
+            ["PageName"] = "Shared Stages",
+        
+            ["Groupings"] = {}
+        })
+    end
+    
     for i = 1, props['Image Store Size'].Value do
         table.insert(master[2].Groupings, {
             ["Name"] = string.format("Image %d", i),
@@ -253,6 +262,97 @@ function GetPages(props)
               GridPos = 2
           }}
         })
+    end
+    
+    if props["Use Shared Stages"].Value == "Yes" then
+        for stage = 1, props['Number of Shared Stages'].Value do
+            table.insert(master[3].Groupings, {
+                ["Name"] = string.format("Shared Stage %d", stage),
+                ["Depth"] = 8,
+                ["Controls"] = {{
+                    Name = string.format("shared.stage.%d.message", stage),
+                    PrettyName = string.format("Shared Stages~%d~Message", stage),
+                    Label = "Message",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 1
+                }, {
+                    Name = string.format("shared.stage.%d.prompt.action", stage),
+                    PrettyName = string.format("Shared Stages~%d~Action Prompt", stage),
+                    Label = "Action Prompt",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 2
+                }, {
+                    Name = string.format("shared.stage.%d.prompt.resolution", stage),
+                    PrettyName = string.format("Shared Stages~%d~Resolution Prompt", stage),
+                    Label = "Resolution Prompt",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 3
+                }, {
+                    Name = string.format("shared.stage.%d.image", stage),
+                    PrettyName = string.format("Shared Stages~%d~Image", stage),
+                    Label = "Image",
+                    ControlType = "Text",
+                    Style = "ComboBox",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 4
+                }, {
+                    Name = string.format("shared.stage.%d.delay.action", stage),
+                    PrettyName = string.format("Shared Stages~%d~Action Delay", stage),
+                    Label = "Delay Between Steps",
+                    ControlType = "Knob",
+                    ControlUnit = "Integer",
+                    Min = 1,
+                    Max = 10,
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 5
+                }, {
+                    Name = string.format("shared.stage.%d.delay.confirmation", stage),
+                    PrettyName = string.format("Shared Stages~%d~Confirmation Delay", stage),
+                    Label = "Wait Time",
+                    ControlType = "Knob",
+                    ControlUnit = "Integer",
+                    Min = 0,
+                    Max = 60,
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 6
+                }, {
+                    Name = string.format("shared.stage.%d.logicinput", stage),
+                    PrettyName = string.format("Shared Stages~%d~Logic Input", stage),
+                    ControlType = "Button",
+                    ButtonType = "Toggle",
+                    PinStyle = "Input",
+                    Label = "Logic Input",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 7
+                }, {
+                    Name = string.format("shared.stage.%d.action.trigger", stage),
+                    PrettyName = string.format("Shared Stages~%d~Action Trigger", stage),
+                    ControlType = "Button",
+                    ButtonType = "Trigger",
+                    PinStyle = "Output",
+                    Label = "Action Trigger",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 8
+                }}
+            })
+        end
     end
     
     for i = 1, props['Number of Issues'].Value do
@@ -298,8 +398,18 @@ function GetPages(props)
         for stage = 1, props['Number of Stages'].Value do
             table.insert(tbl.Groupings, {
                 ["Name"] = string.format("Stage %d", stage),
-                ["Depth"] = 9,
+                ["Depth"] = 10,
                 ["Controls"] = {{
+                    Name = string.format("issue.%d.stage.%d.useshared", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Use Shared Stage", i, stage),
+                    Label = "Use Shared Stage",
+                    ControlType = "Text",
+                    Style = "ComboBox",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 1
+                },{
                     Name = string.format("issue.%d.stage.%d.skip", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Skip Stage", i, stage),
                     ControlType = "Button",
@@ -309,7 +419,7 @@ function GetPages(props)
                     Legend = "Skip",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 1
+                    GridPos = 2
                 }, {
                     Name = string.format("issue.%d.stage.%d.message", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Message", i, stage),
@@ -318,7 +428,7 @@ function GetPages(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Text,
-                    GridPos = 2
+                    GridPos = 3
                 }, {
                     Name = string.format("issue.%d.stage.%d.prompt.action", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Action Prompt", i, stage),
@@ -327,7 +437,7 @@ function GetPages(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Text,
-                    GridPos = 3
+                    GridPos = 4
                 }, {
                     Name = string.format("issue.%d.stage.%d.prompt.resolution", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Resolution Prompt", i, stage),
@@ -336,7 +446,7 @@ function GetPages(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Text,
-                    GridPos = 4
+                    GridPos = 5
                 }, {
                     Name = string.format("issue.%d.stage.%d.image", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Image", i, stage),
@@ -346,7 +456,7 @@ function GetPages(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Text,
-                    GridPos = 5
+                    GridPos = 6
                 }, {
                     Name = string.format("issue.%d.stage.%d.delay.action", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Action Delay", i, stage),
@@ -358,7 +468,7 @@ function GetPages(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 6
+                    GridPos = 7
                 }, {
                     Name = string.format("issue.%d.stage.%d.delay.confirmation", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Confirmation Delay", i, stage),
@@ -370,7 +480,7 @@ function GetPages(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 7
+                    GridPos = 8
                 }, {
                     Name = string.format("issue.%d.stage.%d.logicinput", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Logic Input", i, stage),
@@ -380,7 +490,7 @@ function GetPages(props)
                     Label = "Logic Input",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 8
+                    GridPos = 9
                 }, {
                     Name = string.format("issue.%d.stage.%d.action.trigger", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Action Trigger", i, stage),
@@ -390,7 +500,7 @@ function GetPages(props)
                     Label = "Action Trigger",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 9
+                    GridPos = 10
                 }}
             })
         end
@@ -437,7 +547,22 @@ function GetProperties()
     })
     
     table.insert(props, {
-      Name = "User Confirmation Timeout",
+      Name = "Use Shared Stages",
+      Type = "enum",
+      Choices = {"Yes", "No"},
+      Value = "No"
+    })
+    
+    table.insert(props, {
+      Name = "Number of Shared Stages",
+      Type = "integer",
+      Min = 2,
+      Max = 100,
+      Value = 2
+    })
+    
+    table.insert(props, {
+      Name = "Confirmation Timeout",
       Type = "integer",
       Min = 15,
       Max = 120,
@@ -454,6 +579,7 @@ end
 
 -- Optional function to update available properties when properties are altered by the user
 function RectifyProperties(props)
+    props["Number of Shared Stages"].IsHidden = props["Use Shared Stages"].Value == "No"
     return props
 end
 
@@ -478,6 +604,15 @@ function GetControls(props)
         table.insert(master, tbl)
     end
     
+    if props["Use Shared Stages"].Value == "Yes" then
+        table.insert(master, {
+    
+            ["PageName"] = "Shared Stages",
+        
+            ["Groupings"] = {}
+        })
+    end
+    
     for i = 1, props['Image Store Size'].Value do
         table.insert(master[2].Groupings, {
             ["Name"] = string.format("Image %d", i),
@@ -502,6 +637,97 @@ function GetControls(props)
               GridPos = 2
           }}
         })
+    end
+    
+    if props["Use Shared Stages"].Value == "Yes" then
+        for stage = 1, props['Number of Shared Stages'].Value do
+            table.insert(master[3].Groupings, {
+                ["Name"] = string.format("Shared Stage %d", stage),
+                ["Depth"] = 8,
+                ["Controls"] = {{
+                    Name = string.format("shared.stage.%d.message", stage),
+                    PrettyName = string.format("Shared Stages~%d~Message", stage),
+                    Label = "Message",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 1
+                }, {
+                    Name = string.format("shared.stage.%d.prompt.action", stage),
+                    PrettyName = string.format("Shared Stages~%d~Action Prompt", stage),
+                    Label = "Action Prompt",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 2
+                }, {
+                    Name = string.format("shared.stage.%d.prompt.resolution", stage),
+                    PrettyName = string.format("Shared Stages~%d~Resolution Prompt", stage),
+                    Label = "Resolution Prompt",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 3
+                }, {
+                    Name = string.format("shared.stage.%d.image", stage),
+                    PrettyName = string.format("Shared Stages~%d~Image", stage),
+                    Label = "Image",
+                    ControlType = "Text",
+                    Style = "ComboBox",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 4
+                }, {
+                    Name = string.format("shared.stage.%d.delay.action", stage),
+                    PrettyName = string.format("Shared Stages~%d~Action Delay", stage),
+                    Label = "Delay Between Steps",
+                    ControlType = "Knob",
+                    ControlUnit = "Integer",
+                    Min = 1,
+                    Max = 10,
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 5
+                }, {
+                    Name = string.format("shared.stage.%d.delay.confirmation", stage),
+                    PrettyName = string.format("Shared Stages~%d~Confirmation Delay", stage),
+                    Label = "Wait Time",
+                    ControlType = "Knob",
+                    ControlUnit = "Integer",
+                    Min = 0,
+                    Max = 60,
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 6
+                }, {
+                    Name = string.format("shared.stage.%d.logicinput", stage),
+                    PrettyName = string.format("Shared Stages~%d~Logic Input", stage),
+                    ControlType = "Button",
+                    ButtonType = "Toggle",
+                    PinStyle = "Input",
+                    Label = "Logic Input",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 7
+                }, {
+                    Name = string.format("shared.stage.%d.action.trigger", stage),
+                    PrettyName = string.format("Shared Stages~%d~Action Trigger", stage),
+                    ControlType = "Button",
+                    ButtonType = "Trigger",
+                    PinStyle = "Output",
+                    Label = "Action Trigger",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 8
+                }}
+            })
+        end
     end
     
     for i = 1, props['Number of Issues'].Value do
@@ -547,8 +773,18 @@ function GetControls(props)
         for stage = 1, props['Number of Stages'].Value do
             table.insert(tbl.Groupings, {
                 ["Name"] = string.format("Stage %d", stage),
-                ["Depth"] = 9,
+                ["Depth"] = 10,
                 ["Controls"] = {{
+                    Name = string.format("issue.%d.stage.%d.useshared", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Use Shared Stage", i, stage),
+                    Label = "Use Shared Stage",
+                    ControlType = "Text",
+                    Style = "ComboBox",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 1
+                },{
                     Name = string.format("issue.%d.stage.%d.skip", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Skip Stage", i, stage),
                     ControlType = "Button",
@@ -558,7 +794,7 @@ function GetControls(props)
                     Legend = "Skip",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 1
+                    GridPos = 2
                 }, {
                     Name = string.format("issue.%d.stage.%d.message", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Message", i, stage),
@@ -567,7 +803,7 @@ function GetControls(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Text,
-                    GridPos = 2
+                    GridPos = 3
                 }, {
                     Name = string.format("issue.%d.stage.%d.prompt.action", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Action Prompt", i, stage),
@@ -576,7 +812,7 @@ function GetControls(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Text,
-                    GridPos = 3
+                    GridPos = 4
                 }, {
                     Name = string.format("issue.%d.stage.%d.prompt.resolution", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Resolution Prompt", i, stage),
@@ -585,7 +821,7 @@ function GetControls(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Text,
-                    GridPos = 4
+                    GridPos = 5
                 }, {
                     Name = string.format("issue.%d.stage.%d.image", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Image", i, stage),
@@ -595,7 +831,7 @@ function GetControls(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Text,
-                    GridPos = 5
+                    GridPos = 6
                 }, {
                     Name = string.format("issue.%d.stage.%d.delay.action", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Action Delay", i, stage),
@@ -607,7 +843,7 @@ function GetControls(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 6
+                    GridPos = 7
                 }, {
                     Name = string.format("issue.%d.stage.%d.delay.confirmation", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Confirmation Delay", i, stage),
@@ -619,7 +855,7 @@ function GetControls(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 7
+                    GridPos = 8
                 }, {
                     Name = string.format("issue.%d.stage.%d.logicinput", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Logic Input", i, stage),
@@ -629,7 +865,7 @@ function GetControls(props)
                     Label = "Logic Input",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 8
+                    GridPos = 9
                 }, {
                     Name = string.format("issue.%d.stage.%d.action.trigger", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Action Trigger", i, stage),
@@ -639,7 +875,7 @@ function GetControls(props)
                     Label = "Action Trigger",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 9
+                    GridPos = 10
                 }}
             })
         end
@@ -664,6 +900,15 @@ function GetControlLayout(props)
         table.insert(master, tbl)
     end
     
+    if props["Use Shared Stages"].Value == "Yes" then
+        table.insert(master, {
+    
+            ["PageName"] = "Shared Stages",
+        
+            ["Groupings"] = {}
+        })
+    end
+    
     for i = 1, props['Image Store Size'].Value do
         table.insert(master[2].Groupings, {
             ["Name"] = string.format("Image %d", i),
@@ -688,6 +933,97 @@ function GetControlLayout(props)
               GridPos = 2
           }}
         })
+    end
+    
+    if props["Use Shared Stages"].Value == "Yes" then
+        for stage = 1, props['Number of Shared Stages'].Value do
+            table.insert(master[3].Groupings, {
+                ["Name"] = string.format("Shared Stage %d", stage),
+                ["Depth"] = 8,
+                ["Controls"] = {{
+                    Name = string.format("shared.stage.%d.message", stage),
+                    PrettyName = string.format("Shared Stages~%d~Message", stage),
+                    Label = "Message",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 1
+                }, {
+                    Name = string.format("shared.stage.%d.prompt.action", stage),
+                    PrettyName = string.format("Shared Stages~%d~Action Prompt", stage),
+                    Label = "Action Prompt",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 2
+                }, {
+                    Name = string.format("shared.stage.%d.prompt.resolution", stage),
+                    PrettyName = string.format("Shared Stages~%d~Resolution Prompt", stage),
+                    Label = "Resolution Prompt",
+                    ControlType = "Text",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 3
+                }, {
+                    Name = string.format("shared.stage.%d.image", stage),
+                    PrettyName = string.format("Shared Stages~%d~Image", stage),
+                    Label = "Image",
+                    ControlType = "Text",
+                    Style = "ComboBox",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 4
+                }, {
+                    Name = string.format("shared.stage.%d.delay.action", stage),
+                    PrettyName = string.format("Shared Stages~%d~Action Delay", stage),
+                    Label = "Delay Between Steps",
+                    ControlType = "Knob",
+                    ControlUnit = "Integer",
+                    Min = 1,
+                    Max = 10,
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 5
+                }, {
+                    Name = string.format("shared.stage.%d.delay.confirmation", stage),
+                    PrettyName = string.format("Shared Stages~%d~Confirmation Delay", stage),
+                    Label = "Wait Time",
+                    ControlType = "Knob",
+                    ControlUnit = "Integer",
+                    Min = 0,
+                    Max = 60,
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 6
+                }, {
+                    Name = string.format("shared.stage.%d.logicinput", stage),
+                    PrettyName = string.format("Shared Stages~%d~Logic Input", stage),
+                    ControlType = "Button",
+                    ButtonType = "Toggle",
+                    PinStyle = "Input",
+                    Label = "Logic Input",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 7
+                }, {
+                    Name = string.format("shared.stage.%d.action.trigger", stage),
+                    PrettyName = string.format("Shared Stages~%d~Action Trigger", stage),
+                    ControlType = "Button",
+                    ButtonType = "Trigger",
+                    PinStyle = "Output",
+                    Label = "Action Trigger",
+                    UserPin = true,
+                    Size = Sizes.Button,
+                    GridPos = 8
+                }}
+            })
+        end
     end
     
     for i = 1, props['Number of Issues'].Value do
@@ -733,8 +1069,18 @@ function GetControlLayout(props)
         for stage = 1, props['Number of Stages'].Value do
             table.insert(tbl.Groupings, {
                 ["Name"] = string.format("Stage %d", stage),
-                ["Depth"] = 9,
+                ["Depth"] = 10,
                 ["Controls"] = {{
+                    Name = string.format("issue.%d.stage.%d.useshared", i, stage),
+                    PrettyName = string.format("Issue %d~Stage %d~Use Shared Stage", i, stage),
+                    Label = "Use Shared Stage",
+                    ControlType = "Text",
+                    Style = "ComboBox",
+                    PinStyle = "Both",
+                    UserPin = true,
+                    Size = Sizes.Text,
+                    GridPos = 1
+                },{
                     Name = string.format("issue.%d.stage.%d.skip", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Skip Stage", i, stage),
                     ControlType = "Button",
@@ -744,7 +1090,7 @@ function GetControlLayout(props)
                     Legend = "Skip",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 1
+                    GridPos = 2
                 }, {
                     Name = string.format("issue.%d.stage.%d.message", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Message", i, stage),
@@ -753,7 +1099,7 @@ function GetControlLayout(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Text,
-                    GridPos = 2
+                    GridPos = 3
                 }, {
                     Name = string.format("issue.%d.stage.%d.prompt.action", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Action Prompt", i, stage),
@@ -762,7 +1108,7 @@ function GetControlLayout(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Text,
-                    GridPos = 3
+                    GridPos = 4
                 }, {
                     Name = string.format("issue.%d.stage.%d.prompt.resolution", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Resolution Prompt", i, stage),
@@ -771,7 +1117,7 @@ function GetControlLayout(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Text,
-                    GridPos = 4
+                    GridPos = 5
                 }, {
                     Name = string.format("issue.%d.stage.%d.image", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Image", i, stage),
@@ -781,7 +1127,7 @@ function GetControlLayout(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Text,
-                    GridPos = 5
+                    GridPos = 6
                 }, {
                     Name = string.format("issue.%d.stage.%d.delay.action", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Action Delay", i, stage),
@@ -793,7 +1139,7 @@ function GetControlLayout(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 6
+                    GridPos = 7
                 }, {
                     Name = string.format("issue.%d.stage.%d.delay.confirmation", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Confirmation Delay", i, stage),
@@ -805,7 +1151,7 @@ function GetControlLayout(props)
                     PinStyle = "Both",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 7
+                    GridPos = 8
                 }, {
                     Name = string.format("issue.%d.stage.%d.logicinput", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Logic Input", i, stage),
@@ -815,7 +1161,7 @@ function GetControlLayout(props)
                     Label = "Logic Input",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 8
+                    GridPos = 9
                 }, {
                     Name = string.format("issue.%d.stage.%d.action.trigger", i, stage),
                     PrettyName = string.format("Issue %d~Stage %d~Action Trigger", i, stage),
@@ -825,7 +1171,7 @@ function GetControlLayout(props)
                     Label = "Action Trigger",
                     UserPin = true,
                     Size = Sizes.Button,
-                    GridPos = 9
+                    GridPos = 10
                 }}
             })
         end
@@ -986,10 +1332,15 @@ if Controls then
     
         if (not self.stages[self.currentStage]) then return self:unResolved() end
     
-        if Controls[string.format("issue.%d.stage.%d.skip", self.index, self.currentStage)].Boolean or
-        Controls[string.format("issue.%d.stage.%d.message", self.index, self.currentStage)].String == "" or
-        Controls[string.format("issue.%d.stage.%d.prompt.action", self.index, self.currentStage)].String == "" or
-        Controls[string.format("issue.%d.stage.%d.prompt.resolution", self.index, self.currentStage)].String == "" then
+    
+        -- get shared stage if not 'None'
+        -- local sharedStage = Controls[string.format("issue.%d.stage.%d.useshared", self.index, self.currentStage)]
+        stage = replaceStageWithSharedStage(stage)
+    
+        if stage.skip.Boolean or
+        stage.message.String == "" or
+        stage.actionPrompt.String == "" or
+        stage.resolutionPrompt.String == "" then
             print(string.format("Skipping Stage [%d] - Configure Text Fields or Turn off 'Skip' Mode", self.currentStage))
             self:nextStage()
             self:executeStage(self.stages[self.currentStage])
@@ -1003,20 +1354,20 @@ if Controls then
         setPrompt()
         setImage()
         setProgress()
-        setMessage(stage.message)
+        setMessage(stage.message.String)
     
-        local logicInput = Controls[string.format("issue.%d.stage.%d.logicinput", self.index, self.currentStage)]
+        -- local logicInput = stage.logicInput
     
         GStore.actionTimer:Stop()
     
-        if logicInput.Boolean == true then
+        if stage.logicInput.Boolean == true then
     
             GStore.actionTimer.EventHandler = function(t)
                 t:Stop()
-                setPrompt(stage.actionPrompt)
-                local imageData = getImageByName(stage.image)
+                setPrompt(stage.actionPrompt.String)
+                local imageData = getImageByName(stage.image.String)
                 setImage(imageData)
-                Controls[string.format("issue.%d.stage.%d.action.trigger", self.index, self.currentStage)]:Trigger()
+                stage.actionTrigger:Trigger()
                 
                 GStore.userConfirmationTimer.EventHandler = function(t)
                     t:Stop()
@@ -1024,19 +1375,19 @@ if Controls then
                     initialize()
                 end
     
-                if stage.confirmationDelay > 0 then -- create utility function and reference GStore progressTimer correctly
+                if stage.confirmationDelay.Value > 0 then -- create utility function and reference GStore progressTimer correctly
     
                     local fps = 60
                     GStore.progressTimer.EventHandler = function(t)
                         local currentPosition = Controls["wizard.controls.progress.stage"].Position
-                        local increment = ((1 / fps) / stage.confirmationDelay)
+                        local increment = ((1 / fps) / stage.confirmationDelay.Value)
                         setProgress(currentPosition + increment)
     
-                        if logicInput.Boolean == false then
+                        if stage.logicInput.Boolean == false then
                             t:Stop()
                             setProgress(1)
                             disableControls(false)
-                            GStore.userConfirmationTimer:Start(Properties['User Confirmation Timeout'].Value)
+                            GStore.userConfirmationTimer:Start(Properties['Confirmation Timeout'].Value)
                             print("!! [Logic Indicates Issue if Fixed - Setting Progress to Complete]")
                             print("Waiting for User Confirmation...")
                             return
@@ -1045,7 +1396,7 @@ if Controls then
                         if currentPosition >= 1 then
                             t:Stop()
                             disableControls(false)
-                            GStore.userConfirmationTimer:Start(Properties['User Confirmation Timeout'].Value)
+                            GStore.userConfirmationTimer:Start(Properties['Confirmation Timeout'].Value)
                             print("!! [Progress Timer Complete]")
                             print("Waiting for User Confirmation...")
                             return
@@ -1056,7 +1407,7 @@ if Controls then
                     GStore.progressTimer:Start((1 / fps))
                 else
                     disableControls(false)
-                    GStore.userConfirmationTimer:Start(Properties['User Confirmation Timeout'].Value)
+                    GStore.userConfirmationTimer:Start(Properties['Confirmation Timeout'].Value)
                 end
             end
     
@@ -1064,7 +1415,7 @@ if Controls then
     
             GStore.actionTimer.EventHandler = function(t)
                 t:Stop()
-                setPrompt(stage.resolutionPrompt)
+                setPrompt(stage.resolutionPrompt.String)
                 Timer.CallAfter(function()
                     self:nextStage()
                     self:executeStage(self.stages[self.currentStage])
@@ -1074,7 +1425,7 @@ if Controls then
     
         end
     
-        GStore.actionTimer:Start(stage.actionDelay)
+        GStore.actionTimer:Start(stage.actionDelay.Value)
     
         Controls["wizard.controls.stage.next"].EventHandler = function()
             self:nextStage()
@@ -1198,9 +1549,20 @@ if Controls then
     end
     
     function getImageChoices()
-        local choices = {""}
+        local choices = {"None"}
         for i, tbl in ipairs(GStore.images) do
             table.insert(choices, tbl.name)
+        end
+        return choices
+    end
+    
+    function getSharedStageChoices()
+        local choices = {"None"}
+        for i = 1, Properties["Number of Shared Stages"].Value do
+            table.insert(choices, {
+                Text = string.format("Shared Stage %d", i),
+                index = i
+            })
         end
         return choices
     end
@@ -1209,7 +1571,7 @@ if Controls then
         for i, tbl in ipairs(GStore.images) do
             if imageName == tbl.name then return tbl.data end
         end
-        if imageName == "" then return "" end
+        if imageName == "None" or imageName == "" then return "" end
     end
     
     function addIssueToStore(description, category, index, stages)
@@ -1229,7 +1591,8 @@ if Controls then
         progressTimer = Timer.New(),
         actionTimer = Timer.New(),
         userConfirmationTimer = Timer.New(),
-        images = {}
+        images = {},
+        sharedStages = {}
     }
     
     function initialize()
@@ -1244,6 +1607,8 @@ if Controls then
         GStore.actionTimer:Stop()
         GStore.userConfirmationTimer:Stop()
         compileImageStore()
+        -- compileSharedStages()
+        -- setSharedStageChoices()
         getIssues()
         resetIssueType()
     end
@@ -1255,28 +1620,64 @@ if Controls then
             local imageData = Controls[string.format("store.image.%d.data", i)].String
             addImageToStore(imageName, imageData)
         end
-        print(string.format("Image Store:\n\n%s", rapidjson.encode(GStore.images, {
-            pretty = true
-        })))
-        setImageChoices()
+        print("[Image Store Compiled]")
+        -- print(string.format("Image Store:\n\n%s", rapidjson.encode(GStore.images, {
+        --     pretty = true
+        -- })))
+        setChoices()
     end
     
-    function setImageChoices()
-        local choices = getImageChoices()
+    function setChoices()
+        local imageChoices = getImageChoices()
+        local sharedStageChoices = getSharedStageChoices()
+    
         for issue = 1, Properties["Number of Issues"].Value do
             for stage = 1, Properties["Number of Stages"].Value do
-                Controls[string.format("issue.%d.stage.%d.image", issue, stage)].Choices = choices
+                Controls[string.format("issue.%d.stage.%d.image", issue, stage)].Choices = imageChoices
+                if Controls[string.format("issue.%d.stage.%d.image", issue, stage)].String == "" then
+                    Controls[string.format("issue.%d.stage.%d.image", issue, stage)].String = imageChoices[1]
+                end
+                Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].Choices = sharedStageChoices
+                if Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].String == "" then
+                    Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].String = sharedStageChoices[1]
+                end
             end
         end
-        validateImages()
+    
+        for stage = 1, Properties["Number of Shared Stages"].Value do
+            local imageName = Controls[string.format("shared.stage.%d.image", stage)].String
+            Controls[string.format("shared.stage.%d.image", stage)].Choices = imageChoices
+            if Controls[string.format("shared.stage.%d.image", stage)].String == "" then
+                Controls[string.format("shared.stage.%d.image", stage)].String = imageChoices[1]
+            end
+        end
+    
+        validateChoices()
     end
     
-    function validateImages()
+    function validateChoices()
         for issue = 1, Properties["Number of Issues"].Value do
             for stage = 1, Properties["Number of Stages"].Value do
                 local imageName = Controls[string.format("issue.%d.stage.%d.image", issue, stage)].String
-                Controls[string.format("issue.%d.stage.%d.image", issue, stage)].Color = getImageByName(imageName) and "" or "Red"
+                Controls[string.format("issue.%d.stage.%d.image", issue, stage)].Color =
+                    getImageByName(imageName) and "" or "Red"
+    
+                local sharedStageString = Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].String
+                if sharedStageString == "None" then
+                    Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].Color = ""
+                else
+                    sharedStageString = rapidjson.decode(sharedStageString)
+                    local sharedStageId = sharedStageString.index
+                    local sharedStageControl = Controls[string.format("shared.stage.%d.message", sharedStageId)]
+                    Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].Color = sharedStageControl and "" or "Red"
+                end
+                
             end
+        end
+    
+        for stage = 1, Properties["Number of Shared Stages"].Value do
+            local imageName = Controls[string.format("shared.stage.%d.image", stage)].String
+            Controls[string.format("shared.stage.%d.image", stage)].Color = getImageByName(imageName) and "" or "Red"
         end
     end
     
@@ -1291,32 +1692,58 @@ if Controls then
     
                 local stages = {}
                 for stage = 1, Properties["Number of Stages"].Value do
+    
                     table.insert(stages, {
-                        message = Controls[string.format("issue.%d.stage.%d.message", issue, stage)].String,
-                        actionPrompt = Controls[string.format("issue.%d.stage.%d.prompt.action", issue, stage)].String,
-                        resolutionPrompt = Controls[string.format("issue.%d.stage.%d.prompt.resolution", issue, stage)].String,
-                        confirmationDelay = Controls[string.format("issue.%d.stage.%d.delay.confirmation", issue, stage)].Value,
-                        actionDelay = Controls[string.format("issue.%d.stage.%d.delay.action", issue, stage)].Value,
-                        image = Controls[string.format("issue.%d.stage.%d.image", issue, stage)].String
+                        skip = Controls[string.format("issue.%d.stage.%d.skip", issue, stage)],
+                        useShared = Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)],
+                        message = Controls[string.format("issue.%d.stage.%d.message", issue, stage)],
+                        actionPrompt = Controls[string.format("issue.%d.stage.%d.prompt.action", issue, stage)],
+                        resolutionPrompt = Controls[string.format("issue.%d.stage.%d.prompt.resolution", issue, stage)],
+                        confirmationDelay = Controls[string.format("issue.%d.stage.%d.delay.confirmation", issue, stage)],
+                        actionDelay = Controls[string.format("issue.%d.stage.%d.delay.action", issue, stage)],
+                        image = Controls[string.format("issue.%d.stage.%d.image", issue, stage)],
+                        logicInput = Controls[string.format("issue.%d.stage.%d.logicinput", issue, stage)],
+                        actionTrigger = Controls[string.format("issue.%d.stage.%d.action.trigger", issue, stage)]
                     })
                 end
     
-                addIssueToStore(
-                    Controls[string.format("issue.%d.description", issue)].String,
-                    Controls[string.format("issue.%d.category", issue)].String,
-                    issue,
-                    stages
-                )
+                addIssueToStore(Controls[string.format("issue.%d.description", issue)].String,
+                    Controls[string.format("issue.%d.category", issue)].String, issue, stages)
     
             else
                 print(string.format("!! Issue [%d] is not Enabled", issue))
             end
     
         end
+        print("[Issues Compiled]")
+        -- print(string.format("Issues:\n\n%s", rapidjson.encode(GStore.issues, {
+        --     pretty = true
+        -- })))
+    end
     
-        print(string.format("Issues:\n\n%s", rapidjson.encode(GStore.issues, {
-            pretty = true
-        })))
+    function replaceStageWithSharedStage(stage)
+        if stage.useShared.String ~= "None" then
+            local sharedStage = rapidjson.decode(stage.useShared.String).index
+    
+            if not Controls[string.format("shared.stage.%s.message", sharedStage)] then
+                print("!! [Shared Stage not Valid - Cannot Replace Current Stage with Shared Stage]")
+                return stage
+            end
+    
+            print(string.format("!! Using Shared Stage [%d] Instead", sharedStage))
+            stage = {
+                skip = stage.skip,
+                message = Controls[string.format("shared.stage.%s.message", sharedStage)],
+                actionPrompt = Controls[string.format("shared.stage.%s.prompt.action", sharedStage)],
+                resolutionPrompt = Controls[string.format("shared.stage.%s.prompt.resolution", sharedStage)],
+                logicInput = Controls[string.format("shared.stage.%s.logicinput", sharedStage)],
+                actionTrigger = Controls[string.format("shared.stage.%s.action.trigger", sharedStage)],
+                image = Controls[string.format("shared.stage.%s.image", sharedStage)],
+                actionDelay = Controls[string.format("shared.stage.%s.delay.action", sharedStage)],
+                confirmationDelay = Controls[string.format("shared.stage.%s.delay.confirmation", sharedStage)]
+            }
+        end
+        return stage
     end
     
 
@@ -1327,7 +1754,8 @@ if Controls then
     
     for issue = 1, Properties["Number of Issues"].Value do
       for stage = 1, Properties["Number of Stages"].Value do
-          Controls[string.format("issue.%d.stage.%d.image", issue, stage)].EventHandler = validateImages
+          Controls[string.format("issue.%d.stage.%d.image", issue, stage)].EventHandler = validateChoices
+          Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].EventHandler = validateChoices
       end
     end
     

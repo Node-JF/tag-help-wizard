@@ -77,9 +77,20 @@ function addImageToStore(imageName, imageData)
 end
 
 function getImageChoices()
-    local choices = {""}
+    local choices = {"None"}
     for i, tbl in ipairs(GStore.images) do
         table.insert(choices, tbl.name)
+    end
+    return choices
+end
+
+function getSharedStageChoices()
+    local choices = {"None"}
+    for i = 1, Properties["Number of Shared Stages"].Value do
+        table.insert(choices, {
+            Text = string.format("Shared Stage %d", i),
+            index = i
+        })
     end
     return choices
 end
@@ -88,7 +99,7 @@ function getImageByName(imageName)
     for i, tbl in ipairs(GStore.images) do
         if imageName == tbl.name then return tbl.data end
     end
-    if imageName == "" then return "" end
+    if imageName == "None" or imageName == "" then return "" end
 end
 
 function addIssueToStore(description, category, index, stages)

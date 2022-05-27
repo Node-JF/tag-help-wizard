@@ -14,10 +14,15 @@ function Issue:executeStage(stage)
 
     if (not self.stages[self.currentStage]) then return self:unResolved() end
 
-    if Controls[string.format("issue.%d.stage.%d.skip", self.index, self.currentStage)].Boolean or
-    Controls[string.format("issue.%d.stage.%d.message", self.index, self.currentStage)].String == "" or
-    Controls[string.format("issue.%d.stage.%d.prompt.action", self.index, self.currentStage)].String == "" or
-    Controls[string.format("issue.%d.stage.%d.prompt.resolution", self.index, self.currentStage)].String == "" then
+
+    -- get shared stage if not 'None'
+    -- local sharedStage = Controls[string.format("issue.%d.stage.%d.useshared", self.index, self.currentStage)]
+    stage = replaceStageWithSharedStage(stage)
+
+    if stage.skip.Boolean or
+    stage.message.String == "" or
+    stage.actionPrompt.String == "" or
+    stage.resolutionPrompt.String == "" then
         print(string.format("Skipping Stage [%d] - Configure Text Fields or Turn off 'Skip' Mode", self.currentStage))
         self:nextStage()
         self:executeStage(self.stages[self.currentStage])
@@ -31,20 +36,20 @@ function Issue:executeStage(stage)
     setPrompt()
     setImage()
     setProgress()
-    setMessage(stage.message)
+    setMessage(stage.message.String)
 
-    local logicInput = Controls[string.format("issue.%d.stage.%d.logicinput", self.index, self.currentStage)]
+    -- local logicInput = stage.logicInput
 
     GStore.actionTimer:Stop()
 
-    if logicInput.Boolean == true then
+    if stage.logicInput.Boolean == true then
 
         GStore.actionTimer.EventHandler = function(t)
             t:Stop()
-            setPrompt(stage.actionPrompt)
-            local imageData = getImageByName(stage.image)
+            setPrompt(stage.actionPrompt.String)
+            local imageData = getImageByName(stage.image.String)
             setImage(imageData)
-            Controls[string.format("issue.%d.stage.%d.action.trigger", self.index, self.currentStage)]:Trigger()
+            stage.actionTrigger:Trigger()
             
             GStore.userConfirmationTimer.EventHandler = function(t)
                 t:Stop()
@@ -52,19 +57,19 @@ function Issue:executeStage(stage)
                 initialize()
             end
 
-            if stage.confirmationDelay > 0 then -- create utility function and reference GStore progressTimer correctly
+            if stage.confirmationDelay.Value > 0 then -- create utility function and reference GStore progressTimer correctly
 
                 local fps = 60
                 GStore.progressTimer.EventHandler = function(t)
                     local currentPosition = Controls["wizard.controls.progress.stage"].Position
-                    local increment = ((1 / fps) / stage.confirmationDelay)
+                    local increment = ((1 / fps) / stage.confirmationDelay.Value)
                     setProgress(currentPosition + increment)
 
-                    if logicInput.Boolean == false then
+                    if stage.logicInput.Boolean == false then
                         t:Stop()
                         setProgress(1)
                         disableControls(false)
-                        GStore.userConfirmationTimer:Start(Properties['User Confirmation Timeout'].Value)
+                        GStore.userConfirmationTimer:Start(Properties['Confirmation Timeout'].Value)
                         print("!! [Logic Indicates Issue if Fixed - Setting Progress to Complete]")
                         print("Waiting for User Confirmation...")
                         return
@@ -73,7 +78,7 @@ function Issue:executeStage(stage)
                     if currentPosition >= 1 then
                         t:Stop()
                         disableControls(false)
-                        GStore.userConfirmationTimer:Start(Properties['User Confirmation Timeout'].Value)
+                        GStore.userConfirmationTimer:Start(Properties['Confirmation Timeout'].Value)
                         print("!! [Progress Timer Complete]")
                         print("Waiting for User Confirmation...")
                         return
@@ -84,7 +89,7 @@ function Issue:executeStage(stage)
                 GStore.progressTimer:Start((1 / fps))
             else
                 disableControls(false)
-                GStore.userConfirmationTimer:Start(Properties['User Confirmation Timeout'].Value)
+                GStore.userConfirmationTimer:Start(Properties['Confirmation Timeout'].Value)
             end
         end
 
@@ -92,7 +97,7 @@ function Issue:executeStage(stage)
 
         GStore.actionTimer.EventHandler = function(t)
             t:Stop()
-            setPrompt(stage.resolutionPrompt)
+            setPrompt(stage.resolutionPrompt.String)
             Timer.CallAfter(function()
                 self:nextStage()
                 self:executeStage(self.stages[self.currentStage])
@@ -102,7 +107,7 @@ function Issue:executeStage(stage)
 
     end
 
-    GStore.actionTimer:Start(stage.actionDelay)
+    GStore.actionTimer:Start(stage.actionDelay.Value)
 
     Controls["wizard.controls.stage.next"].EventHandler = function()
         self:nextStage()
