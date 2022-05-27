@@ -2,6 +2,7 @@ GStore = {
     issues = {},
     progressTimer = Timer.New(),
     actionTimer = Timer.New(),
+    userConfirmationTimer = Timer.New(),
     images = {}
 }
 
@@ -15,6 +16,7 @@ function initialize()
     setDefaultCustomMessages()
     GStore.progressTimer:Stop()
     GStore.actionTimer:Stop()
+    GStore.userConfirmationTimer:Stop()
     compileImageStore()
     getIssues()
     resetIssueType()

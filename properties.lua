@@ -21,3 +21,11 @@ table.insert(props, {
   Max = 10,
   Value = 2
 })
+
+table.insert(props, {
+  Name = "Confirmation Timeout",
+  Type = "integer",
+  Min = 15,
+  Max = 120,
+  Value = 60
+})

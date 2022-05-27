@@ -9,6 +9,7 @@ end
 
 function Issue:executeStage(stage)
     GStore.progressTimer:Stop()
+    GStore.userConfirmationTimer:Stop()
     setRunning(true)
 
     if (not self.stages[self.currentStage]) then return self:unResolved() end
@@ -44,6 +45,12 @@ function Issue:executeStage(stage)
             local imageData = getImageByName(stage.image)
             setImage(imageData)
             Controls[string.format("issue.%d.stage.%d.action.trigger", self.index, self.currentStage)]:Trigger()
+            
+            GStore.userConfirmationTimer.EventHandler = function(t)
+                t:Stop()
+                print("!! [Wizard Timed Out]")
+                initialize()
+            end
 
             if stage.confirmationDelay > 0 then -- create utility function and reference GStore progressTimer correctly
 
@@ -57,6 +64,7 @@ function Issue:executeStage(stage)
                         t:Stop()
                         setProgress(1)
                         disableControls(false)
+                        GStore.userConfirmationTimer:Start(Properties['User Confirmation Timeout'].Value)
                         print("!! [Logic Indicates Issue if Fixed - Setting Progress to Complete]")
                         print("Waiting for User Confirmation...")
                         return
@@ -65,6 +73,7 @@ function Issue:executeStage(stage)
                     if currentPosition >= 1 then
                         t:Stop()
                         disableControls(false)
+                        GStore.userConfirmationTimer:Start(Properties['User Confirmation Timeout'].Value)
                         print("!! [Progress Timer Complete]")
                         print("Waiting for User Confirmation...")
                         return
@@ -75,6 +84,7 @@ function Issue:executeStage(stage)
                 GStore.progressTimer:Start((1 / fps))
             else
                 disableControls(false)
+                GStore.userConfirmationTimer:Start(Properties['User Confirmation Timeout'].Value)
             end
         end
 
@@ -108,6 +118,7 @@ end
 
 function Issue:resolved()
     GStore.progressTimer:Stop()
+    GStore.userConfirmationTimer:Stop()
     print(string.format('Issue Resolved at Stage [%d]', self.currentStage))
     setMessage(Controls["wizard.config.message.resolved"].String)
     disableControls(true)
