@@ -198,4 +198,9 @@ Master_Object = {{
     ["PageName"] = "Image Store",
 
     ["Groupings"] = {}
+},{
+
+    ["PageName"] = "Shared Stages",
+
+    ["Groupings"] = {}
 }}

@@ -7,7 +7,15 @@ table.insert(props, {
 })
 
 table.insert(props, {
-  Name = "Number of Issues",
+  Name = "Total Stages",
+  Type = "integer",
+  Min = 2,
+  Max = 100,
+  Value = 10
+})
+
+table.insert(props, {
+  Name = "Total Issues",
   Type = "integer",
   Min = 2,
   Max = 100,
@@ -15,26 +23,11 @@ table.insert(props, {
 })
 
 table.insert(props, {
-  Name = "Number of Stages",
+  Name = "Stages per Issue",
   Type = "integer",
   Min = 2,
-  Max = 10,
-  Value = 2
-})
-
-table.insert(props, {
-  Name = "Use Shared Stages",
-  Type = "enum",
-  Choices = {"Yes", "No"},
-  Value = "No"
-})
-
-table.insert(props, {
-  Name = "Number of Shared Stages",
-  Type = "integer",
-  Min = 2,
-  Max = 100,
-  Value = 2
+  Max = 20,
+  Value = 10
 })
 
 table.insert(props, {

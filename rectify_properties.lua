@@ -1,1 +1,0 @@
-props["Number of Shared Stages"].IsHidden = props["Use Shared Stages"].Value == "No"
