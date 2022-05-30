@@ -26,8 +26,8 @@ Master_Object = {{
     ["PageName"] = "Wizard",
 
     ["Groupings"] = {{
-        ["Name"] = "Custom Messages",
-        ["Depth"] = 2,
+        ["Name"] = "Global Configuration",
+        ["Depth"] = 3,
         ["Controls"] = {{
             Name = "wizard.config.message.resolved",
             PrettyName = "Wizard~Configuration~Resolved Message",
@@ -46,15 +46,27 @@ Master_Object = {{
             UserPin = true,
             Size = Sizes.Text,
             GridPos = 2
+        }, {
+            Name = "wizard.config.delay.auto",
+            PrettyName = "Wizard~Configuration~Auto Advance Delay",
+            Label = "Delay (Auto-Advance)",
+            ControlType = "Knob",
+            ControlUnit = "Integer",
+            Min = 1,
+            Max = 10,
+            PinStyle = "Both",
+            UserPin = true,
+            Size = Sizes.Button,
+            GridPos = 3
         }}
 
     }, {
         ["Name"] = "Controls",
         ["Depth"] = 28,
         ["Controls"] = {{
-            Name = "wizard.controls.compile",
-            PrettyName = "Wizard~Controls~Compile",
-            Label = "Compile Issues =>",
+            Name = "wizard.controls.reset",
+            PrettyName = "Wizard~Controls~Reset",
+            Label = "Reset",
             ControlType = "Button",
             ButtonType = "Trigger",
             PinStyle = "Both",

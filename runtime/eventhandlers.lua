@@ -3,16 +3,24 @@ for i = 1, Properties["Image Store Size"].Value do
   Controls[string.format("store.image.%d.data", i)].EventHandler = compileImageStore
 end
 
-for issue = 1, Properties["Number of Issues"].Value do
-  for stage = 1, Properties["Number of Stages"].Value do
-      Controls[string.format("issue.%d.stage.%d.image", issue, stage)].EventHandler = validateChoices
-      Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].EventHandler = validateChoices
+for stage = 1, Properties["Total Stages"].Value do
+  Controls[string.format("shared.stage.%d.name", stage)].EventHandler = compileSharedStages
+  Controls[string.format("shared.stage.%d.image", stage)].EventHandler = validateImageChoices
+end
+
+
+for issue = 1, Properties["Total Issues"].Value do
+  Controls[string.format("issue.%d.enable", issue)].EventHandler = initialize
+  Controls[string.format("issue.%d.category", issue)].EventHandler = initialize
+  Controls[string.format("issue.%d.description", issue)].EventHandler = initialize
+  for stage = 1, Properties["Stages per Issue"].Value do
+      Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].EventHandler = initialize
   end
 end
 
 Controls["wizard.config.message.resolved"].EventHandler = setDefaultCustomMessages
 Controls["wizard.config.message.unresolved"].EventHandler = setDefaultCustomMessages
-Controls["wizard.controls.compile"].EventHandler = initialize
+Controls["wizard.controls.reset"].EventHandler = initialize
 
 Controls["wizard.controls.issue.type"].EventHandler = function(c)
   if (not GStore.issues[c.String]) then return print('!! [No Issue Type Found]') end

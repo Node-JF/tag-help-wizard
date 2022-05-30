@@ -76,6 +76,11 @@ function addImageToStore(imageName, imageData)
     })
 end
 
+function addSharedStageToStore(stageName)
+    if stageName == ""  or stageName == "None" then return end
+    table.insert(GStore.sharedStages, stageName)
+end
+
 function getImageChoices()
     local choices = {"None"}
     for i, tbl in ipairs(GStore.images) do
@@ -86,11 +91,8 @@ end
 
 function getSharedStageChoices()
     local choices = {"None"}
-    for i = 1, Properties["Number of Shared Stages"].Value do
-        table.insert(choices, {
-            Text = string.format("Shared Stage %d", i),
-            index = i
-        })
+    for i, name in ipairs(GStore.sharedStages) do
+        table.insert(choices, name)
     end
     return choices
 end
@@ -102,14 +104,35 @@ function getImageByName(imageName)
     if imageName == "None" or imageName == "" then return "" end
 end
 
-function addIssueToStore(description, category, index, stages)
-    if description == "" then return end
+function getStageByName(stageName)
+    for i, name in ipairs(GStore.sharedStages) do
+        if stageName == name then return true end
+    end
+    if stageName == "None" or stageName == "" then return "" end
+end
+
+function addIssueToStore(issue)
+    local category = Controls[string.format("issue.%d.category", issue)].String
+    local description = Controls[string.format("issue.%d.description", issue)].String
+
     if category == "" then return end
+    if description == "" then return end
+
+    local stages = {}
+    for stage = 1, Properties["Stages per Issue"].Value do
+
+        GStore.issues[category] = GStore.issues[category] or {}
+
+        table.insert(stages, {
+            name = Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].String
+        })
+
+    end
 
     table.insert(GStore.issues[category], Issue:new({
         description = description,
         category = category,
-        index = index,
+        index = issue,
         stages = stages
     }))
 end

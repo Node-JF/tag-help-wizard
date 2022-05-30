@@ -2,6 +2,12 @@ Issue = {
     currentStage = 1
 }
 
+function Issue:skipStage()
+    self:nextStage()
+    self:executeStage(self.stages[self.currentStage])
+    disableControls(true)
+end
+
 function Issue:nextStage()
     self.currentStage = self.currentStage + 1
     return self
@@ -10,22 +16,39 @@ end
 function Issue:executeStage(stage)
     GStore.progressTimer:Stop()
     GStore.userConfirmationTimer:Stop()
-    setRunning(true)
 
     if (not self.stages[self.currentStage]) then return self:unResolved() end
 
+    setRunning(true)
+
+    local stageIndex = getStageIndexByName(stage.name)
+
+    if not stageIndex then
+        print(string.format("!! Cannot Find Stage Index for [%s]", stage.name))
+        self:skipStage()
+        return
+    end
+
+    local stageControls = {
+        message = Controls[string.format("shared.stage.%d.message", stageIndex)],
+        actionPrompt = Controls[string.format("shared.stage.%d.prompt.action", stageIndex)],
+        resolutionPrompt = Controls[string.format("shared.stage.%d.prompt.resolution", stageIndex)],
+        image = Controls[string.format("shared.stage.%d.image", stageIndex)],
+        -- actionDelay = Controls[string.format("shared.stage.%d.delay.action", stageIndex)],
+        confirmationDelay = Controls[string.format("shared.stage.%d.delay.confirmation", stageIndex)],
+        logicInput = Controls[string.format("shared.stage.%d.logicinput", stageIndex)],
+        actionTrigger = Controls[string.format("shared.stage.%d.action.trigger", stageIndex)],
+    }
 
     -- get shared stage if not 'None'
     -- local sharedStage = Controls[string.format("issue.%d.stage.%d.useshared", self.index, self.currentStage)]
-    stage = replaceStageWithSharedStage(stage)
+    -- stage = replaceStageWithSharedStage(stage)
 
-    if stage.message.String == "" or
-    stage.actionPrompt.String == "" or
-    stage.resolutionPrompt.String == "" then
+    if stageControls.message.String == "" or
+    stageControls.actionPrompt.String == "" or
+    stageControls.resolutionPrompt.String == "" then
         print(string.format("Skipping Stage [%d] - Could not Validate", self.currentStage))
-        self:nextStage()
-        self:executeStage(self.stages[self.currentStage])
-        disableControls(true)
+        self:skipStage()
         return
     end
 
@@ -35,20 +58,18 @@ function Issue:executeStage(stage)
     setPrompt()
     setImage()
     setProgress()
-    setMessage(stage.message.String)
-
-    -- local logicInput = stage.logicInput
+    setMessage(stageControls.message.String)
 
     GStore.actionTimer:Stop()
 
-    if stage.logicInput.Boolean == true then
+    if stageControls.logicInput.Boolean == true then
 
         GStore.actionTimer.EventHandler = function(t)
             t:Stop()
-            setPrompt(stage.actionPrompt.String)
-            local imageData = getImageByName(stage.image.String)
+            setPrompt(stageControls.actionPrompt.String)
+            local imageData = getImageByName(stageControls.image.String)
             setImage(imageData)
-            stage.actionTrigger:Trigger()
+            stageControls.actionTrigger:Trigger()
             
             GStore.userConfirmationTimer.EventHandler = function(t)
                 t:Stop()
@@ -56,15 +77,15 @@ function Issue:executeStage(stage)
                 initialize()
             end
 
-            if stage.confirmationDelay.Value > 0 then -- create utility function and reference GStore progressTimer correctly
+            if stageControls.confirmationDelay.Value > 0 then
 
                 local fps = 60
                 GStore.progressTimer.EventHandler = function(t)
                     local currentPosition = Controls["wizard.controls.progress.stage"].Position
-                    local increment = ((1 / fps) / stage.confirmationDelay.Value)
+                    local increment = ((1 / fps) / stageControls.confirmationDelay.Value)
                     setProgress(currentPosition + increment)
 
-                    if stage.logicInput.Boolean == false then
+                    if stageControls.logicInput.Boolean == false then
                         t:Stop()
                         setProgress(1)
                         disableControls(false)
@@ -96,17 +117,17 @@ function Issue:executeStage(stage)
 
         GStore.actionTimer.EventHandler = function(t)
             t:Stop()
-            setPrompt(stage.resolutionPrompt.String)
+            setPrompt(stageControls.resolutionPrompt.String)
             Timer.CallAfter(function()
                 self:nextStage()
                 self:executeStage(self.stages[self.currentStage])
                 print("Auto-Executing Next Stage")
-            end, 1) -- needs to be a custom delay, disappears before user can read the resolution message.
+            end, Controls["wizard.config.delay.auto"].Value)
         end
 
     end
 
-    GStore.actionTimer:Start(stage.actionDelay.Value)
+    GStore.actionTimer:Start(Controls[string.format("issue.%d.delay.action", self.index)].Value)
 
     Controls["wizard.controls.stage.next"].EventHandler = function()
         self:nextStage()

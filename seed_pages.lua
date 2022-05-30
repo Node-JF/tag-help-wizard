@@ -34,7 +34,7 @@ end
 for stage = 1, props['Total Stages'].Value do
     table.insert(master[3].Groupings, {
         ["Name"] = string.format("Shared Stage %d", stage),
-        ["Depth"] = 9,
+        ["Depth"] = 8,
         ["Controls"] = {{
             Name = string.format("shared.stage.%d.name", stage),
             PrettyName = string.format("Shared Stages~Name~%d", stage),
@@ -82,18 +82,6 @@ for stage = 1, props['Total Stages'].Value do
             Size = Sizes.Text,
             GridPos = 5
         }, {
-            Name = string.format("shared.stage.%d.delay.action", stage),
-            PrettyName = string.format("Shared Stages~Action Delay~%d", stage),
-            Label = "Delay Between Steps",
-            ControlType = "Knob",
-            ControlUnit = "Integer",
-            Min = 1,
-            Max = 10,
-            PinStyle = "Both",
-            UserPin = true,
-            Size = Sizes.Button,
-            GridPos = 6
-        }, {
             Name = string.format("shared.stage.%d.delay.confirmation", stage),
             PrettyName = string.format("Shared Stages~Confirmation Delay~%d", stage),
             Label = "Wait Time",
@@ -104,7 +92,7 @@ for stage = 1, props['Total Stages'].Value do
             PinStyle = "Both",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 7
+            GridPos = 6
         }, {
             Name = string.format("shared.stage.%d.logicinput", stage),
             PrettyName = string.format("Shared Stages~Logic Input~%d", stage),
@@ -114,7 +102,7 @@ for stage = 1, props['Total Stages'].Value do
             Label = "Logic Input",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 8
+            GridPos = 7
         }, {
             Name = string.format("shared.stage.%d.action.trigger", stage),
             PrettyName = string.format("Shared Stages~Action Trigger~%d", stage),
@@ -124,7 +112,7 @@ for stage = 1, props['Total Stages'].Value do
             Label = "Action Trigger",
             UserPin = true,
             Size = Sizes.Button,
-            GridPos = 9
+            GridPos = 8
         }}
     })
 end
@@ -136,7 +124,7 @@ for i = 1, props['Total Issues'].Value do
 
         ["Groupings"] = {{
             ["Name"] = "Configuration",
-            ["Depth"] = 3,
+            ["Depth"] = 4,
             ["Controls"] = {{
                 Name = string.format("issue.%d.enable", i),
                 PrettyName = string.format("Issue %d~Enable", i),
@@ -165,12 +153,24 @@ for i = 1, props['Total Issues'].Value do
                 UserPin = true,
                 Size = Sizes.Text,
                 GridPos = 3
+            }, {
+                Name = string.format("issue.%d.delay.action", i),
+                PrettyName = string.format("Issue %d~Action Delay", i),
+                Label = "Delay (Message -> Prompt)",
+                ControlType = "Knob",
+                ControlUnit = "Integer",
+                Min = 1,
+                Max = 10,
+                PinStyle = "Both",
+                UserPin = true,
+                Size = Sizes.Button,
+                GridPos = 4
             }}
         }}
     }
 
     local controls = {}
-    for stage = 1, props['Total Stages'].Value do
+    for stage = 1, props['Stages per Issue'].Value do
 
         table.insert(controls, {
                 Name = string.format("issue.%d.stage.%d.useshared", i, stage),
@@ -181,7 +181,6 @@ for i = 1, props['Total Issues'].Value do
                 PinStyle = "Both",
                 UserPin = true,
                 Size = Sizes.Text,
-                Position = Sizes.Text,
                 GridPos = stage
             })
 
@@ -189,7 +188,7 @@ for i = 1, props['Total Issues'].Value do
 
     table.insert(tbl.Groupings, {
         ["Name"] = "Stages",
-        ["Depth"] = props['Total Stages'].Value,
+        ["Depth"] = props['Stages per Issue'].Value,
         ["Controls"] = controls
     })
 
