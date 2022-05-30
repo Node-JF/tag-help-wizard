@@ -19,11 +19,10 @@ function Issue:executeStage(stage)
     -- local sharedStage = Controls[string.format("issue.%d.stage.%d.useshared", self.index, self.currentStage)]
     stage = replaceStageWithSharedStage(stage)
 
-    if stage.skip.Boolean or
-    stage.message.String == "" or
+    if stage.message.String == "" or
     stage.actionPrompt.String == "" or
     stage.resolutionPrompt.String == "" then
-        print(string.format("Skipping Stage [%d] - Configure Text Fields or Turn off 'Skip' Mode", self.currentStage))
+        print(string.format("Skipping Stage [%d] - Could not Validate", self.currentStage))
         self:nextStage()
         self:executeStage(self.stages[self.currentStage])
         disableControls(true)

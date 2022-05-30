@@ -181,19 +181,7 @@ for i = 1, props['Total Issues'].Value do
                 PinStyle = "Both",
                 UserPin = true,
                 Size = Sizes.Text,
-                Position = (width-15) - Sizes.Text[1] - Sizes.Button[1],
-                GridPos = stage
-            })
-            
-            table.insert(controls, {
-                Name = string.format("issue.%d.stage.%d.skip", i, stage),
-                PrettyName = string.format("Issue %d~Skip Stage~%d", i, stage),
-                ControlType = "Button",
-                ButtonType = "Toggle",
-                PinStyle = "Output",
-                Legend = "Skip",
-                UserPin = true,
-                Size = Sizes.Button,
+                Position = Sizes.Text,
                 GridPos = stage
             })
 
