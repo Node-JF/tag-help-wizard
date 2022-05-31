@@ -1,8 +1,8 @@
 -- Information block for the plugin
 PluginInfo = {
   Name = "TAG~Help Wizard",
-  Version = "2.0",
-  BuildVersion = "2.0.0.24",
+  Version = "2.1",
+  BuildVersion = "2.2.0.1",
   Id = "1c3e2ee3-a45f-4ffb-b894-8ea26a3d385b",
   Author = "Jason Foord (TAG)",
   Description = "Configure help issues that can assist your users with resolving problems."
@@ -39,7 +39,7 @@ Master_Object = {{
         ["Name"] = "Global Configuration",
         ["Depth"] = 3,
         ["Controls"] = {{
-            Name = "wizard.config.message.resolved",
+            Name = "wizard_config_message_resolved",
             PrettyName = "Wizard~Configuration~Resolved Message",
             Label = "Resolved",
             ControlType = "Text",
@@ -48,7 +48,7 @@ Master_Object = {{
             Size = Sizes.Text,
             GridPos = 1
         }, {
-            Name = "wizard.config.message.unresolved",
+            Name = "wizard_config_message_unresolved",
             PrettyName = "Wizard~Configuration~Unresolved Message",
             Label = "Unresolved",
             ControlType = "Text",
@@ -57,7 +57,7 @@ Master_Object = {{
             Size = Sizes.Text,
             GridPos = 2
         }, {
-            Name = "wizard.config.delay.auto",
+            Name = "wizard_config_delay_auto",
             PrettyName = "Wizard~Configuration~Auto Advance Delay",
             Label = "Delay (Auto-Advance)",
             ControlType = "Knob",
@@ -74,7 +74,7 @@ Master_Object = {{
         ["Name"] = "Controls",
         ["Depth"] = 28,
         ["Controls"] = {{
-            Name = "wizard.controls.reset",
+            Name = "wizard_controls_reset",
             PrettyName = "Wizard~Controls~Reset",
             Label = "Reset",
             ControlType = "Button",
@@ -85,7 +85,7 @@ Master_Object = {{
             Size = Sizes.Button,
             GridPos = 1
         },{
-            Name = "wizard.controls.issue.type",
+            Name = "wizard_controls_issue_type",
             PrettyName = "Wizard~Controls~Issue Type",
             Label = "Issue Type",
             ControlType = "Text",
@@ -95,7 +95,7 @@ Master_Object = {{
             Size = Sizes.Text,
             GridPos = 3
         }, {
-            Name = "wizard.controls.issue.list",
+            Name = "wizard_controls_issue_list",
             PrettyName = "Wizard~Controls~Issue List",
             Label = "Issue List",
             ControlType = "Text",
@@ -106,7 +106,7 @@ Master_Object = {{
             Size = Sizes.ListBox,
             GridPos = 4
         }, {
-            Name = "wizard.controls.start",
+            Name = "wizard_controls_start",
             PrettyName = "Wizard~Controls~Start",
             Legend = "Start",
             ControlType = "Button",
@@ -116,7 +116,7 @@ Master_Object = {{
             Size = Sizes.Button,
             GridPos = 11
         }, {
-            Name = "wizard.controls.message",
+            Name = "wizard_controls_message",
             PrettyName = "Wizard~Controls~User Message",
             Label = "Message",
             ControlType = "Indicator",
@@ -127,7 +127,7 @@ Master_Object = {{
             Width = "Full",
             GridPos = 12
         }, {
-            Name = "wizard.controls.prompt",
+            Name = "wizard_controls_prompt",
             PrettyName = "Wizard~Controls~User Prompt",
             Label = "Prompt",
             ControlType = "Indicator",
@@ -138,7 +138,7 @@ Master_Object = {{
             Width = "Full",
             GridPos = 15
         }, {
-            Name = "wizard.controls.image",
+            Name = "wizard_controls_image",
             Label = "Image",
             ControlType = "Button",
             ButtonType = "Toggle",
@@ -146,7 +146,7 @@ Master_Object = {{
             Width = "Full",
             GridPos = 18
         }, {
-            Name = "wizard.controls.progress.stage",
+            Name = "wizard_controls_progress_stage",
             PrettyName = "Wizard~Controls~Stage Progress",
             Label = "Progress",
             ControlType = "Knob",
@@ -158,7 +158,7 @@ Master_Object = {{
             Size = Sizes.Button,
             GridPos = 26
         }, {
-            Name = "wizard.controls.stage.next",
+            Name = "wizard_controls_stage_next",
             PrettyName = "Wizard~Controls~Next Stage",
             Label = "Next Stage",
             Icon = "Fast Forward",
@@ -169,7 +169,7 @@ Master_Object = {{
             Size = Sizes.Button,
             GridPos = 27
         }, {
-            Name = "wizard.controls.issue.resolved",
+            Name = "wizard_controls_issue_resolved",
             PrettyName = "Wizard~Controls~Issue Resolved",
             Label = "Issue Resolved",
             Icon = "Check",
@@ -184,7 +184,7 @@ Master_Object = {{
         ["Name"] = "Events",
         ["Depth"] = 3,
         ["Controls"] = {{
-            Name = "wizard.events.isrunning",
+            Name = "wizard_events_isrunning",
             PrettyName = "Wizard~Events~Is Running",
             Label = "Wizard Is Running",
             ControlType = "Indicator",
@@ -194,7 +194,7 @@ Master_Object = {{
             Size = Sizes.LED,
             GridPos = 1
         }, {
-            Name = "wizard.events.trigger.resolved",
+            Name = "wizard_events_trigger_resolved",
             PrettyName = "Wizard~Events~Issue Resolved Trigger",
             Label = "Issue Resolved Trigger",
             ControlType = "Button",
@@ -204,7 +204,7 @@ Master_Object = {{
             Size = Sizes.Button,
             GridPos = 2
         }, {
-            Name = "wizard.events.trigger.unresolved",
+            Name = "wizard_events_trigger_unresolved",
             PrettyName = "Wizard~Events~Issue Unresolved Trigger",
             Label = "Issue Unresolved Trigger",
             ControlType = "Button",
@@ -252,7 +252,7 @@ function GetPages(props)
             ["Name"] = string.format("Image %d", i),
             ["Depth"] = 2,
             ["Controls"] = {{
-                Name = string.format("store.image.%d.name", i),
+                Name = string.format("store_image_%d_name", i),
                 PrettyName = string.format("Image Store~%d~Name", i),
                 Label = "Name",
                 ControlType = "Text",
@@ -261,7 +261,7 @@ function GetPages(props)
                 Size = Sizes.Text,
                 GridPos = 1
             },{
-              Name = string.format("store.image.%d.data", i),
+              Name = string.format("store_image_%d_data", i),
               PrettyName = string.format("Image Store~%d~Data", i),
               Label = "Base64 Image Data",
               ControlType = "Text",
@@ -278,7 +278,7 @@ function GetPages(props)
             ["Name"] = string.format("Shared Stage %d", stage),
             ["Depth"] = 8,
             ["Controls"] = {{
-                Name = string.format("shared.stage.%d.name", stage),
+                Name = string.format("shared_stage_%d_name", stage),
                 PrettyName = string.format("Shared Stages~Name~%d", stage),
                 Label = "Name",
                 ControlType = "Text",
@@ -287,7 +287,7 @@ function GetPages(props)
                 Size = Sizes.Text,
                 GridPos = 1
             }, {
-                Name = string.format("shared.stage.%d.message", stage),
+                Name = string.format("shared_stage_%d_message", stage),
                 PrettyName = string.format("Shared Stages~Message~%d", stage),
                 Label = "Message",
                 ControlType = "Text",
@@ -296,7 +296,7 @@ function GetPages(props)
                 Size = Sizes.Text,
                 GridPos = 2
             }, {
-                Name = string.format("shared.stage.%d.prompt.action", stage),
+                Name = string.format("shared_stage_%d_prompt_action", stage),
                 PrettyName = string.format("Shared Stages~Action Prompt~%d", stage),
                 Label = "Action Prompt",
                 ControlType = "Text",
@@ -305,7 +305,7 @@ function GetPages(props)
                 Size = Sizes.Text,
                 GridPos = 3
             }, {
-                Name = string.format("shared.stage.%d.prompt.resolution", stage),
+                Name = string.format("shared_stage_%d_prompt_resolution", stage),
                 PrettyName = string.format("Shared Stages~Resolution Prompt~%d", stage),
                 Label = "Resolution Prompt",
                 ControlType = "Text",
@@ -314,7 +314,7 @@ function GetPages(props)
                 Size = Sizes.Text,
                 GridPos = 4
             }, {
-                Name = string.format("shared.stage.%d.image", stage),
+                Name = string.format("shared_stage_%d_image", stage),
                 PrettyName = string.format("Shared Stages~Image~%d", stage),
                 Label = "Image",
                 ControlType = "Text",
@@ -324,7 +324,7 @@ function GetPages(props)
                 Size = Sizes.Text,
                 GridPos = 5
             }, {
-                Name = string.format("shared.stage.%d.delay.confirmation", stage),
+                Name = string.format("shared_stage_%d_delay_confirmation", stage),
                 PrettyName = string.format("Shared Stages~Confirmation Delay~%d", stage),
                 Label = "Wait Time",
                 ControlType = "Knob",
@@ -336,7 +336,7 @@ function GetPages(props)
                 Size = Sizes.Button,
                 GridPos = 6
             }, {
-                Name = string.format("shared.stage.%d.logicinput", stage),
+                Name = string.format("shared_stage_%d_logicinput", stage),
                 PrettyName = string.format("Shared Stages~Logic Input~%d", stage),
                 ControlType = "Button",
                 ButtonType = "Toggle",
@@ -346,7 +346,7 @@ function GetPages(props)
                 Size = Sizes.Button,
                 GridPos = 7
             }, {
-                Name = string.format("shared.stage.%d.action.trigger", stage),
+                Name = string.format("shared_stage_%d_action_trigger", stage),
                 PrettyName = string.format("Shared Stages~Action Trigger~%d", stage),
                 ControlType = "Button",
                 ButtonType = "Trigger",
@@ -368,7 +368,7 @@ function GetPages(props)
                 ["Name"] = "Configuration",
                 ["Depth"] = 4,
                 ["Controls"] = {{
-                    Name = string.format("issue.%d.enable", i),
+                    Name = string.format("issue_%d_enable", i),
                     PrettyName = string.format("Issue %d~Enable", i),
                     Label = "Enable",
                     ControlType = "Button",
@@ -378,7 +378,7 @@ function GetPages(props)
                     Size = Sizes.Button,
                     GridPos = 1
                 }, {
-                    Name = string.format("issue.%d.category", i),
+                    Name = string.format("issue_%d_category", i),
                     PrettyName = string.format("Issue %d~Category", i),
                     Label = "Issue Category",
                     ControlType = "Text",
@@ -387,7 +387,7 @@ function GetPages(props)
                     Size = Sizes.Text,
                     GridPos = 2
                 }, {
-                    Name = string.format("issue.%d.description", i),
+                    Name = string.format("issue_%d_description", i),
                     PrettyName = string.format("Issue %d~Description", i),
                     Label = "Description",
                     ControlType = "Text",
@@ -396,7 +396,7 @@ function GetPages(props)
                     Size = Sizes.Text,
                     GridPos = 3
                 }, {
-                    Name = string.format("issue.%d.delay.action", i),
+                    Name = string.format("issue_%d_delay_action", i),
                     PrettyName = string.format("Issue %d~Action Delay", i),
                     Label = "Delay (Message -> Prompt)",
                     ControlType = "Knob",
@@ -415,7 +415,7 @@ function GetPages(props)
         for stage = 1, props['Stages per Issue'].Value do
     
             table.insert(controls, {
-                    Name = string.format("issue.%d.stage.%d.useshared", i, stage),
+                    Name = string.format("issue_%d_stage_%d_useshared", i, stage),
                     PrettyName = string.format("Issue %d~Use Shared Stage~%d", i, stage),
                     Label = string.format("Stage %d", stage),
                     ControlType = "Text",
@@ -531,7 +531,7 @@ function GetControls(props)
             ["Name"] = string.format("Image %d", i),
             ["Depth"] = 2,
             ["Controls"] = {{
-                Name = string.format("store.image.%d.name", i),
+                Name = string.format("store_image_%d_name", i),
                 PrettyName = string.format("Image Store~%d~Name", i),
                 Label = "Name",
                 ControlType = "Text",
@@ -540,7 +540,7 @@ function GetControls(props)
                 Size = Sizes.Text,
                 GridPos = 1
             },{
-              Name = string.format("store.image.%d.data", i),
+              Name = string.format("store_image_%d_data", i),
               PrettyName = string.format("Image Store~%d~Data", i),
               Label = "Base64 Image Data",
               ControlType = "Text",
@@ -557,7 +557,7 @@ function GetControls(props)
             ["Name"] = string.format("Shared Stage %d", stage),
             ["Depth"] = 8,
             ["Controls"] = {{
-                Name = string.format("shared.stage.%d.name", stage),
+                Name = string.format("shared_stage_%d_name", stage),
                 PrettyName = string.format("Shared Stages~Name~%d", stage),
                 Label = "Name",
                 ControlType = "Text",
@@ -566,7 +566,7 @@ function GetControls(props)
                 Size = Sizes.Text,
                 GridPos = 1
             }, {
-                Name = string.format("shared.stage.%d.message", stage),
+                Name = string.format("shared_stage_%d_message", stage),
                 PrettyName = string.format("Shared Stages~Message~%d", stage),
                 Label = "Message",
                 ControlType = "Text",
@@ -575,7 +575,7 @@ function GetControls(props)
                 Size = Sizes.Text,
                 GridPos = 2
             }, {
-                Name = string.format("shared.stage.%d.prompt.action", stage),
+                Name = string.format("shared_stage_%d_prompt_action", stage),
                 PrettyName = string.format("Shared Stages~Action Prompt~%d", stage),
                 Label = "Action Prompt",
                 ControlType = "Text",
@@ -584,7 +584,7 @@ function GetControls(props)
                 Size = Sizes.Text,
                 GridPos = 3
             }, {
-                Name = string.format("shared.stage.%d.prompt.resolution", stage),
+                Name = string.format("shared_stage_%d_prompt_resolution", stage),
                 PrettyName = string.format("Shared Stages~Resolution Prompt~%d", stage),
                 Label = "Resolution Prompt",
                 ControlType = "Text",
@@ -593,7 +593,7 @@ function GetControls(props)
                 Size = Sizes.Text,
                 GridPos = 4
             }, {
-                Name = string.format("shared.stage.%d.image", stage),
+                Name = string.format("shared_stage_%d_image", stage),
                 PrettyName = string.format("Shared Stages~Image~%d", stage),
                 Label = "Image",
                 ControlType = "Text",
@@ -603,7 +603,7 @@ function GetControls(props)
                 Size = Sizes.Text,
                 GridPos = 5
             }, {
-                Name = string.format("shared.stage.%d.delay.confirmation", stage),
+                Name = string.format("shared_stage_%d_delay_confirmation", stage),
                 PrettyName = string.format("Shared Stages~Confirmation Delay~%d", stage),
                 Label = "Wait Time",
                 ControlType = "Knob",
@@ -615,7 +615,7 @@ function GetControls(props)
                 Size = Sizes.Button,
                 GridPos = 6
             }, {
-                Name = string.format("shared.stage.%d.logicinput", stage),
+                Name = string.format("shared_stage_%d_logicinput", stage),
                 PrettyName = string.format("Shared Stages~Logic Input~%d", stage),
                 ControlType = "Button",
                 ButtonType = "Toggle",
@@ -625,7 +625,7 @@ function GetControls(props)
                 Size = Sizes.Button,
                 GridPos = 7
             }, {
-                Name = string.format("shared.stage.%d.action.trigger", stage),
+                Name = string.format("shared_stage_%d_action_trigger", stage),
                 PrettyName = string.format("Shared Stages~Action Trigger~%d", stage),
                 ControlType = "Button",
                 ButtonType = "Trigger",
@@ -647,7 +647,7 @@ function GetControls(props)
                 ["Name"] = "Configuration",
                 ["Depth"] = 4,
                 ["Controls"] = {{
-                    Name = string.format("issue.%d.enable", i),
+                    Name = string.format("issue_%d_enable", i),
                     PrettyName = string.format("Issue %d~Enable", i),
                     Label = "Enable",
                     ControlType = "Button",
@@ -657,7 +657,7 @@ function GetControls(props)
                     Size = Sizes.Button,
                     GridPos = 1
                 }, {
-                    Name = string.format("issue.%d.category", i),
+                    Name = string.format("issue_%d_category", i),
                     PrettyName = string.format("Issue %d~Category", i),
                     Label = "Issue Category",
                     ControlType = "Text",
@@ -666,7 +666,7 @@ function GetControls(props)
                     Size = Sizes.Text,
                     GridPos = 2
                 }, {
-                    Name = string.format("issue.%d.description", i),
+                    Name = string.format("issue_%d_description", i),
                     PrettyName = string.format("Issue %d~Description", i),
                     Label = "Description",
                     ControlType = "Text",
@@ -675,7 +675,7 @@ function GetControls(props)
                     Size = Sizes.Text,
                     GridPos = 3
                 }, {
-                    Name = string.format("issue.%d.delay.action", i),
+                    Name = string.format("issue_%d_delay_action", i),
                     PrettyName = string.format("Issue %d~Action Delay", i),
                     Label = "Delay (Message -> Prompt)",
                     ControlType = "Knob",
@@ -694,7 +694,7 @@ function GetControls(props)
         for stage = 1, props['Stages per Issue'].Value do
     
             table.insert(controls, {
-                    Name = string.format("issue.%d.stage.%d.useshared", i, stage),
+                    Name = string.format("issue_%d_stage_%d_useshared", i, stage),
                     PrettyName = string.format("Issue %d~Use Shared Stage~%d", i, stage),
                     Label = string.format("Stage %d", stage),
                     ControlType = "Text",
@@ -739,7 +739,7 @@ function GetControlLayout(props)
             ["Name"] = string.format("Image %d", i),
             ["Depth"] = 2,
             ["Controls"] = {{
-                Name = string.format("store.image.%d.name", i),
+                Name = string.format("store_image_%d_name", i),
                 PrettyName = string.format("Image Store~%d~Name", i),
                 Label = "Name",
                 ControlType = "Text",
@@ -748,7 +748,7 @@ function GetControlLayout(props)
                 Size = Sizes.Text,
                 GridPos = 1
             },{
-              Name = string.format("store.image.%d.data", i),
+              Name = string.format("store_image_%d_data", i),
               PrettyName = string.format("Image Store~%d~Data", i),
               Label = "Base64 Image Data",
               ControlType = "Text",
@@ -765,7 +765,7 @@ function GetControlLayout(props)
             ["Name"] = string.format("Shared Stage %d", stage),
             ["Depth"] = 8,
             ["Controls"] = {{
-                Name = string.format("shared.stage.%d.name", stage),
+                Name = string.format("shared_stage_%d_name", stage),
                 PrettyName = string.format("Shared Stages~Name~%d", stage),
                 Label = "Name",
                 ControlType = "Text",
@@ -774,7 +774,7 @@ function GetControlLayout(props)
                 Size = Sizes.Text,
                 GridPos = 1
             }, {
-                Name = string.format("shared.stage.%d.message", stage),
+                Name = string.format("shared_stage_%d_message", stage),
                 PrettyName = string.format("Shared Stages~Message~%d", stage),
                 Label = "Message",
                 ControlType = "Text",
@@ -783,7 +783,7 @@ function GetControlLayout(props)
                 Size = Sizes.Text,
                 GridPos = 2
             }, {
-                Name = string.format("shared.stage.%d.prompt.action", stage),
+                Name = string.format("shared_stage_%d_prompt_action", stage),
                 PrettyName = string.format("Shared Stages~Action Prompt~%d", stage),
                 Label = "Action Prompt",
                 ControlType = "Text",
@@ -792,7 +792,7 @@ function GetControlLayout(props)
                 Size = Sizes.Text,
                 GridPos = 3
             }, {
-                Name = string.format("shared.stage.%d.prompt.resolution", stage),
+                Name = string.format("shared_stage_%d_prompt_resolution", stage),
                 PrettyName = string.format("Shared Stages~Resolution Prompt~%d", stage),
                 Label = "Resolution Prompt",
                 ControlType = "Text",
@@ -801,7 +801,7 @@ function GetControlLayout(props)
                 Size = Sizes.Text,
                 GridPos = 4
             }, {
-                Name = string.format("shared.stage.%d.image", stage),
+                Name = string.format("shared_stage_%d_image", stage),
                 PrettyName = string.format("Shared Stages~Image~%d", stage),
                 Label = "Image",
                 ControlType = "Text",
@@ -811,7 +811,7 @@ function GetControlLayout(props)
                 Size = Sizes.Text,
                 GridPos = 5
             }, {
-                Name = string.format("shared.stage.%d.delay.confirmation", stage),
+                Name = string.format("shared_stage_%d_delay_confirmation", stage),
                 PrettyName = string.format("Shared Stages~Confirmation Delay~%d", stage),
                 Label = "Wait Time",
                 ControlType = "Knob",
@@ -823,7 +823,7 @@ function GetControlLayout(props)
                 Size = Sizes.Button,
                 GridPos = 6
             }, {
-                Name = string.format("shared.stage.%d.logicinput", stage),
+                Name = string.format("shared_stage_%d_logicinput", stage),
                 PrettyName = string.format("Shared Stages~Logic Input~%d", stage),
                 ControlType = "Button",
                 ButtonType = "Toggle",
@@ -833,7 +833,7 @@ function GetControlLayout(props)
                 Size = Sizes.Button,
                 GridPos = 7
             }, {
-                Name = string.format("shared.stage.%d.action.trigger", stage),
+                Name = string.format("shared_stage_%d_action_trigger", stage),
                 PrettyName = string.format("Shared Stages~Action Trigger~%d", stage),
                 ControlType = "Button",
                 ButtonType = "Trigger",
@@ -855,7 +855,7 @@ function GetControlLayout(props)
                 ["Name"] = "Configuration",
                 ["Depth"] = 4,
                 ["Controls"] = {{
-                    Name = string.format("issue.%d.enable", i),
+                    Name = string.format("issue_%d_enable", i),
                     PrettyName = string.format("Issue %d~Enable", i),
                     Label = "Enable",
                     ControlType = "Button",
@@ -865,7 +865,7 @@ function GetControlLayout(props)
                     Size = Sizes.Button,
                     GridPos = 1
                 }, {
-                    Name = string.format("issue.%d.category", i),
+                    Name = string.format("issue_%d_category", i),
                     PrettyName = string.format("Issue %d~Category", i),
                     Label = "Issue Category",
                     ControlType = "Text",
@@ -874,7 +874,7 @@ function GetControlLayout(props)
                     Size = Sizes.Text,
                     GridPos = 2
                 }, {
-                    Name = string.format("issue.%d.description", i),
+                    Name = string.format("issue_%d_description", i),
                     PrettyName = string.format("Issue %d~Description", i),
                     Label = "Description",
                     ControlType = "Text",
@@ -883,7 +883,7 @@ function GetControlLayout(props)
                     Size = Sizes.Text,
                     GridPos = 3
                 }, {
-                    Name = string.format("issue.%d.delay.action", i),
+                    Name = string.format("issue_%d_delay_action", i),
                     PrettyName = string.format("Issue %d~Action Delay", i),
                     Label = "Delay (Message -> Prompt)",
                     ControlType = "Knob",
@@ -902,7 +902,7 @@ function GetControlLayout(props)
         for stage = 1, props['Stages per Issue'].Value do
     
             table.insert(controls, {
-                    Name = string.format("issue.%d.stage.%d.useshared", i, stage),
+                    Name = string.format("issue_%d_stage_%d_useshared", i, stage),
                     PrettyName = string.format("Issue %d~Use Shared Stage~%d", i, stage),
                     Label = string.format("Stage %d", stage),
                     ControlType = "Text",
@@ -1093,14 +1093,14 @@ if Controls then
         end
     
         local stageControls = {
-            message = Controls[string.format("shared.stage.%d.message", stageIndex)],
-            actionPrompt = Controls[string.format("shared.stage.%d.prompt.action", stageIndex)],
-            resolutionPrompt = Controls[string.format("shared.stage.%d.prompt.resolution", stageIndex)],
-            image = Controls[string.format("shared.stage.%d.image", stageIndex)],
+            message = Controls[string.format("shared_stage_%d_message", stageIndex)],
+            actionPrompt = Controls[string.format("shared_stage_%d_prompt_action", stageIndex)],
+            resolutionPrompt = Controls[string.format("shared_stage_%d_prompt_resolution", stageIndex)],
+            image = Controls[string.format("shared_stage_%d_image", stageIndex)],
             -- actionDelay = Controls[string.format("shared.stage.%d.delay.action", stageIndex)],
-            confirmationDelay = Controls[string.format("shared.stage.%d.delay.confirmation", stageIndex)],
-            logicInput = Controls[string.format("shared.stage.%d.logicinput", stageIndex)],
-            actionTrigger = Controls[string.format("shared.stage.%d.action.trigger", stageIndex)],
+            confirmationDelay = Controls[string.format("shared_stage_%d_delay_confirmation", stageIndex)],
+            logicInput = Controls[string.format("shared_stage_%d_logicinput", stageIndex)],
+            actionTrigger = Controls[string.format("shared_stage_%d_action_trigger", stageIndex)],
         }
     
         -- get shared stage if not 'None'
@@ -1144,7 +1144,7 @@ if Controls then
     
                     local fps = 60
                     GStore.progressTimer.EventHandler = function(t)
-                        local currentPosition = Controls["wizard.controls.progress.stage"].Position
+                        local currentPosition = Controls["wizard_controls_progress_stage"].Position
                         local increment = ((1 / fps) / stageControls.confirmationDelay.Value)
                         setProgress(currentPosition + increment)
     
@@ -1181,24 +1181,24 @@ if Controls then
             GStore.actionTimer.EventHandler = function(t)
                 t:Stop()
                 setPrompt(stageControls.resolutionPrompt.String)
-                Timer.CallAfter(function()
+                Timer.CallAfter(function() -- should be timer, so I can stop it. if the delay is too long then this will return after the user starts a new issue.
                     self:nextStage()
                     self:executeStage(self.stages[self.currentStage])
                     print("Auto-Executing Next Stage")
-                end, Controls["wizard.config.delay.auto"].Value)
+                end, Controls["wizard_config_delay_auto"].Value)
             end
     
         end
     
-        GStore.actionTimer:Start(Controls[string.format("issue.%d.delay.action", self.index)].Value)
+        GStore.actionTimer:Start(Controls[string.format("issue_%d_delay_action", self.index)].Value)
     
-        Controls["wizard.controls.stage.next"].EventHandler = function()
+        Controls["wizard_controls_stage_next"].EventHandler = function()
             self:nextStage()
             self:executeStage(self.stages[self.currentStage])
             disableControls(true)
         end
     
-        Controls["wizard.controls.issue.resolved"].EventHandler = function()
+        Controls["wizard_controls_issue_resolved"].EventHandler = function()
             self:resolved()
             disableControls(true)
         end
@@ -1208,23 +1208,23 @@ if Controls then
         GStore.progressTimer:Stop()
         GStore.userConfirmationTimer:Stop()
         print(string.format('Issue Resolved at Stage [%d]', self.currentStage))
-        setMessage(Controls["wizard.config.message.resolved"].String)
+        setMessage(Controls["wizard_config_message_resolved"].String)
         disableControls(true)
         setPrompt()
         setImage()
         setProgress()
-        Controls["wizard.events.trigger.resolved"]:Trigger()
+        Controls["wizard_events_trigger_resolved"]:Trigger()
         Timer.CallAfter(function() setRunning(false) end, 3)
     end
     
     function Issue:unResolved()
         print(string.format('Issue Unresolved at Stage [%d]', self.currentStage - 1))
-        setMessage(Controls["wizard.config.message.unresolved"].String)
+        setMessage(Controls["wizard_config_message_unresolved"].String)
         disableControls(true)
         setPrompt()
         setImage()
         setProgress()
-        Controls["wizard.events.trigger.unresolved"]:Trigger()
+        Controls["wizard_events_trigger_unresolved"]:Trigger()
         Timer.CallAfter(function() setRunning(false) end, 3)
     end
     
@@ -1236,72 +1236,72 @@ if Controls then
     end
 
     function disableControls(bool)
-        Controls["wizard.controls.stage.next"].IsDisabled = bool
-        Controls["wizard.controls.issue.resolved"].IsDisabled = bool
+        Controls["wizard_controls_stage_next"].IsDisabled = bool
+        Controls["wizard_controls_issue_resolved"].IsDisabled = bool
     end
     
     function setImage(data)
         local data = data or ""
-        Controls["wizard.controls.image"].Legend = rapidjson.encode({
+        Controls["wizard_controls_image"].Legend = rapidjson.encode({
             DrawChrome = false,
             IconData = data
         })
     end
     
     function setDefaultCustomMessages()
-        if Controls["wizard.config.message.resolved"].String == "" then
-            Controls["wizard.config.message.resolved"].String = "Great! Have a nice day."
+        if Controls["wizard_config_message_resolved"].String == "" then
+            Controls["wizard_config_message_resolved"].String = "Great! Have a nice day."
         end
-        if Controls["wizard.config.message.unresolved"].String == "" then
-            Controls["wizard.config.message.unresolved"].String = "This issue could not be resolved. Please call technical support."
+        if Controls["wizard_config_message_unresolved"].String == "" then
+            Controls["wizard_config_message_unresolved"].String = "This issue could not be resolved. Please call technical support."
         end
     end
     
     function setMessage(message)
         local message = message or ""
-        Controls["wizard.controls.message"].String = message
+        Controls["wizard_controls_message"].String = message
     end
     
     function setPrompt(prompt)
         local prompt = prompt or ""
-        Controls["wizard.controls.prompt"].String = prompt
+        Controls["wizard_controls_prompt"].String = prompt
     end
     
     function setProgress(value)
         local value = value or 0
-        Controls["wizard.controls.progress.stage"].Position = value
+        Controls["wizard_controls_progress_stage"].Position = value
     end
     
     function setRunning(state)
         local state = state or false
-        Controls["wizard.events.isrunning"].Boolean = state
+        Controls["wizard_events_isrunning"].Boolean = state
     end
     
     function setCategoryChoices()
         local choices = {}
         for category, list in pairs(GStore.issues) do table.insert(choices, category) end
-        Controls["wizard.controls.issue.type"].Choices = choices
+        Controls["wizard_controls_issue_type"].Choices = choices
     end
     
     function compileIssuesList()
         local choices = {}
-        for i, item in ipairs(GStore.issues[Controls["wizard.controls.issue.type"].String]) do
+        for i, item in ipairs(GStore.issues[Controls["wizard_controls_issue_type"].String]) do
             table.insert(choices, {
                 Text = item.description,
                 index = i
             })
         end
-        Controls["wizard.controls.issue.list"].Choices = choices
+        Controls["wizard_controls_issue_list"].Choices = choices
     end
     
     function resetIssueType()
-        Controls["wizard.controls.issue.type"].String = "Select an Issue Type..."
+        Controls["wizard_controls_issue_type"].String = "Select an Issue Type..."
         setCategoryChoices()
     end
     
     function resetIssueList()
-        Controls["wizard.controls.issue.list"].Choices = {}
-        Controls["wizard.controls.issue.list"].String = ""
+        Controls["wizard_controls_issue_list"].Choices = {}
+        Controls["wizard_controls_issue_list"].String = ""
         GStore.issues = {}
     end
     
@@ -1349,8 +1349,8 @@ if Controls then
     end
     
     function addIssueToStore(issue)
-        local category = Controls[string.format("issue.%d.category", issue)].String
-        local description = Controls[string.format("issue.%d.description", issue)].String
+        local category = Controls[string.format("issue_%d_category", issue)].String
+        local description = Controls[string.format("issue_%d_description", issue)].String
     
         if category == "" then return end
         if description == "" then return end
@@ -1361,7 +1361,7 @@ if Controls then
             GStore.issues[category] = GStore.issues[category] or {}
     
             table.insert(stages, {
-                name = Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].String
+                name = Controls[string.format("issue_%d_stage_%d_useshared", issue, stage)].String
             })
     
         end
@@ -1403,8 +1403,8 @@ if Controls then
     function compileImageStore()
         GStore.images = {}
         for i = 1, Properties["Image Store Size"].Value do
-            local imageName = Controls[string.format("store.image.%d.name", i)].String
-            local imageData = Controls[string.format("store.image.%d.data", i)].String
+            local imageName = Controls[string.format("store_image_%d_name", i)].String
+            local imageData = Controls[string.format("store_image_%d_data", i)].String
             addImageToStore(imageName, imageData)
         end
         print("[Image Store Compiled]")
@@ -1417,7 +1417,7 @@ if Controls then
     function compileSharedStages()
         GStore.sharedStages = {}
         for stage = 1, Properties["Total Stages"].Value do
-            local stageName = Controls[string.format("shared.stage.%d.name", stage)].String
+            local stageName = Controls[string.format("shared_stage_%d_name", stage)].String
             addSharedStageToStore(stageName)
         end
         -- print("[Shared Stages Compiled]")
@@ -1431,9 +1431,9 @@ if Controls then
         local imageChoices = getImageChoices()
     
         for stage = 1, Properties["Total Stages"].Value do
-            Controls[string.format("shared.stage.%d.image", stage)].Choices = imageChoices
-            if Controls[string.format("shared.stage.%d.image", stage)].String == "" then
-                Controls[string.format("shared.stage.%d.image", stage)].String = imageChoices[1]
+            Controls[string.format("shared_stage_%d_image", stage)].Choices = imageChoices
+            if Controls[string.format("shared_stage_%d_image", stage)].String == "" then
+                Controls[string.format("shared_stage_%d_image", stage)].String = imageChoices[1]
             end
         end
     
@@ -1445,9 +1445,9 @@ if Controls then
     
         for issue = 1, Properties["Total Issues"].Value do
             for stage = 1, Properties["Stages per Issue"].Value do
-                Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].Choices = sharedStageChoices
-                if Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].String == "" then
-                    Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].String = sharedStageChoices[1]
+                Controls[string.format("issue_%d_stage_%d_useshared", issue, stage)].Choices = sharedStageChoices
+                if Controls[string.format("issue_%d_stage_%d_useshared", issue, stage)].String == "" then
+                    Controls[string.format("issue_%d_stage_%d_useshared", issue, stage)].String = sharedStageChoices[1]
                 end
             end
         end
@@ -1457,15 +1457,15 @@ if Controls then
     
     function validateImageChoices()
         for stage = 1, Properties["Total Stages"].Value do
-            local imageName = Controls[string.format("shared.stage.%d.image", stage)].String
-            Controls[string.format("shared.stage.%d.image", stage)].Color = getImageByName(imageName) and "" or "Red"
+            local imageName = Controls[string.format("shared_stage_%d_image", stage)].String
+            Controls[string.format("shared_stage_%d_image", stage)].Color = getImageByName(imageName) and "" or "Red"
         end
     end
     
     function validateStageChoices()
         for issue = 1, Properties["Total Issues"].Value do
             for stage = 1, Properties["Stages per Issue"].Value do
-                local stageControl = Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)]
+                local stageControl = Controls[string.format("issue_%d_stage_%d_useshared", issue, stage)]
                 stageControl.Color = getStageByName(stageControl.String) and "" or "Red"
             end
         end
@@ -1475,7 +1475,7 @@ if Controls then
         resetIssueList()
         for issue = 1, Properties["Total Issues"].Value do
     
-            if Controls[string.format("issue.%d.enable", issue)].Boolean then
+            if Controls[string.format("issue_%d_enable", issue)].Boolean then
                 addIssueToStore(issue)
             else
                 print(string.format("!! Issue [%d] is not Enabled", issue))
@@ -1496,41 +1496,41 @@ if Controls then
     end
 
     for i = 1, Properties["Image Store Size"].Value do
-      Controls[string.format("store.image.%d.name", i)].EventHandler = compileImageStore
-      Controls[string.format("store.image.%d.data", i)].EventHandler = compileImageStore
+      Controls[string.format("store_image_%d_name", i)].EventHandler = compileImageStore
+      Controls[string.format("store_image_%d_data", i)].EventHandler = compileImageStore
     end
     
     for stage = 1, Properties["Total Stages"].Value do
-      Controls[string.format("shared.stage.%d.name", stage)].EventHandler = compileSharedStages
-      Controls[string.format("shared.stage.%d.image", stage)].EventHandler = validateImageChoices
+      Controls[string.format("shared_stage_%d_name", stage)].EventHandler = compileSharedStages
+      Controls[string.format("shared_stage_%d_image", stage)].EventHandler = validateImageChoices
     end
     
     
     for issue = 1, Properties["Total Issues"].Value do
-      Controls[string.format("issue.%d.enable", issue)].EventHandler = initialize
-      Controls[string.format("issue.%d.category", issue)].EventHandler = initialize
-      Controls[string.format("issue.%d.description", issue)].EventHandler = initialize
+      Controls[string.format("issue_%d_enable", issue)].EventHandler = initialize
+      Controls[string.format("issue_%d_category", issue)].EventHandler = initialize
+      Controls[string.format("issue_%d_description", issue)].EventHandler = initialize
       for stage = 1, Properties["Stages per Issue"].Value do
-          Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].EventHandler = initialize
+          Controls[string.format("issue_%d_stage_%d_useshared", issue, stage)].EventHandler = initialize
       end
     end
     
-    Controls["wizard.config.message.resolved"].EventHandler = setDefaultCustomMessages
-    Controls["wizard.config.message.unresolved"].EventHandler = setDefaultCustomMessages
-    Controls["wizard.controls.reset"].EventHandler = initialize
+    Controls["wizard_config_message_resolved"].EventHandler = setDefaultCustomMessages
+    Controls["wizard_config_message_unresolved"].EventHandler = setDefaultCustomMessages
+    Controls["wizard_controls_reset"].EventHandler = initialize
     
-    Controls["wizard.controls.issue.type"].EventHandler = function(c)
+    Controls["wizard_controls_issue_type"].EventHandler = function(c)
       if (not GStore.issues[c.String]) then return print('!! [No Issue Type Found]') end
-      Controls["wizard.controls.issue.list"].String = ""
+      Controls["wizard_controls_issue_list"].String = ""
       compileIssuesList()
     end
     
-    Controls["wizard.controls.start"].EventHandler = function()
-      local issue = rapidjson.decode(Controls["wizard.controls.issue.list"].String)
+    Controls["wizard_controls_start"].EventHandler = function()
+      local issue = rapidjson.decode(Controls["wizard_controls_issue_list"].String)
       if not issue then return print("!! No Issue Selected") end -- guard clause
-      print(string.format("Starting Wizard: Selected Issue [%s]", Controls["wizard.controls.issue.list"].String))
+      print(string.format("Starting Wizard: Selected Issue [%s]", Controls["wizard_controls_issue_list"].String))
       local issueIndex = issue.index
-      local issueType = Controls["wizard.controls.issue.type"].String
+      local issueType = Controls["wizard_controls_issue_type"].String
       local issueObject = GStore.issues[issueType][issueIndex]
       issueObject.currentStage = 1
       issueObject:executeStage(issueObject.stages[issueObject.currentStage])

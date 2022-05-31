@@ -10,7 +10,7 @@ for i = 1, props['Image Store Size'].Value do
         ["Name"] = string.format("Image %d", i),
         ["Depth"] = 2,
         ["Controls"] = {{
-            Name = string.format("store.image.%d.name", i),
+            Name = string.format("store_image_%d_name", i),
             PrettyName = string.format("Image Store~%d~Name", i),
             Label = "Name",
             ControlType = "Text",
@@ -19,7 +19,7 @@ for i = 1, props['Image Store Size'].Value do
             Size = Sizes.Text,
             GridPos = 1
         },{
-          Name = string.format("store.image.%d.data", i),
+          Name = string.format("store_image_%d_data", i),
           PrettyName = string.format("Image Store~%d~Data", i),
           Label = "Base64 Image Data",
           ControlType = "Text",
@@ -36,7 +36,7 @@ for stage = 1, props['Total Stages'].Value do
         ["Name"] = string.format("Shared Stage %d", stage),
         ["Depth"] = 8,
         ["Controls"] = {{
-            Name = string.format("shared.stage.%d.name", stage),
+            Name = string.format("shared_stage_%d_name", stage),
             PrettyName = string.format("Shared Stages~Name~%d", stage),
             Label = "Name",
             ControlType = "Text",
@@ -45,7 +45,7 @@ for stage = 1, props['Total Stages'].Value do
             Size = Sizes.Text,
             GridPos = 1
         }, {
-            Name = string.format("shared.stage.%d.message", stage),
+            Name = string.format("shared_stage_%d_message", stage),
             PrettyName = string.format("Shared Stages~Message~%d", stage),
             Label = "Message",
             ControlType = "Text",
@@ -54,7 +54,7 @@ for stage = 1, props['Total Stages'].Value do
             Size = Sizes.Text,
             GridPos = 2
         }, {
-            Name = string.format("shared.stage.%d.prompt.action", stage),
+            Name = string.format("shared_stage_%d_prompt_action", stage),
             PrettyName = string.format("Shared Stages~Action Prompt~%d", stage),
             Label = "Action Prompt",
             ControlType = "Text",
@@ -63,7 +63,7 @@ for stage = 1, props['Total Stages'].Value do
             Size = Sizes.Text,
             GridPos = 3
         }, {
-            Name = string.format("shared.stage.%d.prompt.resolution", stage),
+            Name = string.format("shared_stage_%d_prompt_resolution", stage),
             PrettyName = string.format("Shared Stages~Resolution Prompt~%d", stage),
             Label = "Resolution Prompt",
             ControlType = "Text",
@@ -72,7 +72,7 @@ for stage = 1, props['Total Stages'].Value do
             Size = Sizes.Text,
             GridPos = 4
         }, {
-            Name = string.format("shared.stage.%d.image", stage),
+            Name = string.format("shared_stage_%d_image", stage),
             PrettyName = string.format("Shared Stages~Image~%d", stage),
             Label = "Image",
             ControlType = "Text",
@@ -82,7 +82,7 @@ for stage = 1, props['Total Stages'].Value do
             Size = Sizes.Text,
             GridPos = 5
         }, {
-            Name = string.format("shared.stage.%d.delay.confirmation", stage),
+            Name = string.format("shared_stage_%d_delay_confirmation", stage),
             PrettyName = string.format("Shared Stages~Confirmation Delay~%d", stage),
             Label = "Wait Time",
             ControlType = "Knob",
@@ -94,7 +94,7 @@ for stage = 1, props['Total Stages'].Value do
             Size = Sizes.Button,
             GridPos = 6
         }, {
-            Name = string.format("shared.stage.%d.logicinput", stage),
+            Name = string.format("shared_stage_%d_logicinput", stage),
             PrettyName = string.format("Shared Stages~Logic Input~%d", stage),
             ControlType = "Button",
             ButtonType = "Toggle",
@@ -104,7 +104,7 @@ for stage = 1, props['Total Stages'].Value do
             Size = Sizes.Button,
             GridPos = 7
         }, {
-            Name = string.format("shared.stage.%d.action.trigger", stage),
+            Name = string.format("shared_stage_%d_action_trigger", stage),
             PrettyName = string.format("Shared Stages~Action Trigger~%d", stage),
             ControlType = "Button",
             ButtonType = "Trigger",
@@ -126,7 +126,7 @@ for i = 1, props['Total Issues'].Value do
             ["Name"] = "Configuration",
             ["Depth"] = 4,
             ["Controls"] = {{
-                Name = string.format("issue.%d.enable", i),
+                Name = string.format("issue_%d_enable", i),
                 PrettyName = string.format("Issue %d~Enable", i),
                 Label = "Enable",
                 ControlType = "Button",
@@ -136,7 +136,7 @@ for i = 1, props['Total Issues'].Value do
                 Size = Sizes.Button,
                 GridPos = 1
             }, {
-                Name = string.format("issue.%d.category", i),
+                Name = string.format("issue_%d_category", i),
                 PrettyName = string.format("Issue %d~Category", i),
                 Label = "Issue Category",
                 ControlType = "Text",
@@ -145,7 +145,7 @@ for i = 1, props['Total Issues'].Value do
                 Size = Sizes.Text,
                 GridPos = 2
             }, {
-                Name = string.format("issue.%d.description", i),
+                Name = string.format("issue_%d_description", i),
                 PrettyName = string.format("Issue %d~Description", i),
                 Label = "Description",
                 ControlType = "Text",
@@ -154,7 +154,7 @@ for i = 1, props['Total Issues'].Value do
                 Size = Sizes.Text,
                 GridPos = 3
             }, {
-                Name = string.format("issue.%d.delay.action", i),
+                Name = string.format("issue_%d_delay_action", i),
                 PrettyName = string.format("Issue %d~Action Delay", i),
                 Label = "Delay (Message -> Prompt)",
                 ControlType = "Knob",
@@ -173,7 +173,7 @@ for i = 1, props['Total Issues'].Value do
     for stage = 1, props['Stages per Issue'].Value do
 
         table.insert(controls, {
-                Name = string.format("issue.%d.stage.%d.useshared", i, stage),
+                Name = string.format("issue_%d_stage_%d_useshared", i, stage),
                 PrettyName = string.format("Issue %d~Use Shared Stage~%d", i, stage),
                 Label = string.format("Stage %d", stage),
                 ControlType = "Text",

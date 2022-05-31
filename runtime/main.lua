@@ -27,8 +27,8 @@ end
 function compileImageStore()
     GStore.images = {}
     for i = 1, Properties["Image Store Size"].Value do
-        local imageName = Controls[string.format("store.image.%d.name", i)].String
-        local imageData = Controls[string.format("store.image.%d.data", i)].String
+        local imageName = Controls[string.format("store_image_%d_name", i)].String
+        local imageData = Controls[string.format("store_image_%d_data", i)].String
         addImageToStore(imageName, imageData)
     end
     print("[Image Store Compiled]")
@@ -41,7 +41,7 @@ end
 function compileSharedStages()
     GStore.sharedStages = {}
     for stage = 1, Properties["Total Stages"].Value do
-        local stageName = Controls[string.format("shared.stage.%d.name", stage)].String
+        local stageName = Controls[string.format("shared_stage_%d_name", stage)].String
         addSharedStageToStore(stageName)
     end
     -- print("[Shared Stages Compiled]")
@@ -55,9 +55,9 @@ function setImageChoices()
     local imageChoices = getImageChoices()
 
     for stage = 1, Properties["Total Stages"].Value do
-        Controls[string.format("shared.stage.%d.image", stage)].Choices = imageChoices
-        if Controls[string.format("shared.stage.%d.image", stage)].String == "" then
-            Controls[string.format("shared.stage.%d.image", stage)].String = imageChoices[1]
+        Controls[string.format("shared_stage_%d_image", stage)].Choices = imageChoices
+        if Controls[string.format("shared_stage_%d_image", stage)].String == "" then
+            Controls[string.format("shared_stage_%d_image", stage)].String = imageChoices[1]
         end
     end
 
@@ -69,9 +69,9 @@ function setStageChoices()
 
     for issue = 1, Properties["Total Issues"].Value do
         for stage = 1, Properties["Stages per Issue"].Value do
-            Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].Choices = sharedStageChoices
-            if Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].String == "" then
-                Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)].String = sharedStageChoices[1]
+            Controls[string.format("issue_%d_stage_%d_useshared", issue, stage)].Choices = sharedStageChoices
+            if Controls[string.format("issue_%d_stage_%d_useshared", issue, stage)].String == "" then
+                Controls[string.format("issue_%d_stage_%d_useshared", issue, stage)].String = sharedStageChoices[1]
             end
         end
     end
@@ -81,15 +81,15 @@ end
 
 function validateImageChoices()
     for stage = 1, Properties["Total Stages"].Value do
-        local imageName = Controls[string.format("shared.stage.%d.image", stage)].String
-        Controls[string.format("shared.stage.%d.image", stage)].Color = getImageByName(imageName) and "" or "Red"
+        local imageName = Controls[string.format("shared_stage_%d_image", stage)].String
+        Controls[string.format("shared_stage_%d_image", stage)].Color = getImageByName(imageName) and "" or "Red"
     end
 end
 
 function validateStageChoices()
     for issue = 1, Properties["Total Issues"].Value do
         for stage = 1, Properties["Stages per Issue"].Value do
-            local stageControl = Controls[string.format("issue.%d.stage.%d.useshared", issue, stage)]
+            local stageControl = Controls[string.format("issue_%d_stage_%d_useshared", issue, stage)]
             stageControl.Color = getStageByName(stageControl.String) and "" or "Red"
         end
     end
@@ -99,7 +99,7 @@ function getIssueList()
     resetIssueList()
     for issue = 1, Properties["Total Issues"].Value do
 
-        if Controls[string.format("issue.%d.enable", issue)].Boolean then
+        if Controls[string.format("issue_%d_enable", issue)].Boolean then
             addIssueToStore(issue)
         else
             print(string.format("!! Issue [%d] is not Enabled", issue))
