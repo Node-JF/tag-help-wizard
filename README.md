@@ -8,194 +8,188 @@ This is a Q-SYS Plugin for Control of Open Broadcaster Software (OBS) via the [W
 
 See [Q-SYS Online Help File - Plugins](https://q-syshelp.qsc.com/#Schematic_Library/plugins.htm)
 
-## Controls
+## Properties
 
-### Configuration
-![Configuration Page](./Screenshots/configuration.png)
+#### Image Store Size
 
-#### Device Status
+The number of configurable image slots in the Image Store
 
-Displays the connection status of the Websocket.
+> Images are referenced by their name, and configured in Shared Stages.
 
-#### IP Address
+#### Total Stages
 
-The IP Address of the machine running OBS Studio.
+The maximum number of shared stages the can be configured.
 
-#### Password
+> Shared Stages are referenced by their name, and configured in Issues.
 
-The Password configured in the *Tools -> Websocket Server Settings* dialogue menu.
+#### Total Issues
 
-#### Connect
+The maximum number of Issues the can be configured.
 
-Toggles the Websocket connection.
+#### Stages per Issue
 
-### Dashboard
-![Configuration Page](./Screenshots/dashboard.png)
+The maximum number of stages the can be configured in each Issue.
 
-#### OBS Version
+#### Confirmation Timeout
 
-The detected version of the connected OBS Studio software.
+The time to wait, once a user is prompted for resolution, before the Wizard automatically restarts.
 
-#### Websocket Version
+## Wizard
+![Wizard](./screenshots/wizard.png)
 
-The detected version of the connected OBS Studio Websocket extension.
+### Global Configuration
 
-#### Scenes
+#### Resolved
 
-Displays the list of available scenes. Selecting a scene will transition to the scene.
+The message to display when the Wizard finishes in a resolved state.
 
-> Tip: For discrete controls, create a copy of the ListBox control and change the presentation to Button -> String, with the "Button String" value as the scene name.
+#### Unresolved
 
-#### Sources
+The message to display when the Wizard finishes in an unresolved state.
 
-Displays the list of available sources in the active scene. Selecting a source will update 'render' and 'locked' controls with the value corresponding to *this* source.
+#### Delay (Auto-Advance)
 
-> Tip: For discrete controls, create a copy of the ListBox control and change the presentation to Button -> String, with the "Button String" value as the source name.
+The delay between when a stage finishes in a resolved state, before automatically starting the next stage.
 
-#### Audio Mixer
+### Controls
 
-Displays the list of audio mixer sources in the scene. Selecting an audio source will update 'volume' and 'mute' controls with the value corresponding to *this* source.
+#### Reset
 
-> Tip: For discrete controls, create a copy of the ListBox control and change the presentation to Button -> String, with the "Button String" value as the audio source name.
+Resets the Wizard manually.
 
-#### Source Forward
+#### Issue Type
 
-Rearranges the sources by bringing the selected source forward one position.
+The category of issue.
 
-#### Source Backward
+> This filters the issue list.
 
-Rearranges the sources by bringing the selected source backward one position.
+#### Issue List
 
-#### Source Render
+The issues that are enabled and fall under the selected category.
 
-Sets the render state of the source.
+#### Start
 
-#### Source Locked
+Starts the Wizard for the selected issue.
 
-Sets the locked state of the source.
+#### Message
 
-#### Source Volume
+The message to display for the current stage.
 
-Sets the volume of the audio source.
+#### Prompt
 
-#### Source Mute
+The prompt to display for the current stage.
 
-Sets the mute of the audio source.
+#### Image
 
-#### Transition Type
+The image to display for the current stage.
 
-Set the current direct cut transition.
+#### Progress
 
-#### Transition Duration
+The progress for the current stage's wait time.
 
-Sets the curren direct cut transition duration.
+> 0 - 100%
 
-> Only applies to transition types that utilize a duration value.
+#### Next Stage
 
-#### Start Streaming
+User input - this stage ***did not*** resolve the issue. Runs the next stage.
 
-Attempts to start streaming.
+#### Issue Resolved
 
-#### Stop Streaming
+User input - this stage ***did*** resolve the issue. Resolve the Wizard.
 
-Attempts to stop streaming.
+### Events
 
-#### Start Recording
+#### Wizard Is Running
 
-Attempts to start recording.
+Indicates if the Wizard is currently running.
 
-#### Stop Recording
+#### Issue Resolved Trigger
 
-Attempts to stop recording.
+Fires when the Wizard finishes in a resolved state.
 
-#### Pause Recording
+#### Issue Unresolved Trigger
 
-Attempts to pause recording.
+Fires when the Wizard finishes in an unresolved state.
 
-> Tip: Recordings cannot be paused if the recording quality is set to "Same as stream".
+## Image Store
+![Image Store](./screenshots/image-store.png)
 
-#### Resume Recording
+#### Image 
 
-Resumes a paused recording.
+> ##### Name
 
-#### Start Replay Buffer
+> The custom name to identify this image.
 
-Attempts to start the replay buffer.
+> ##### Base64 Image Data
 
-> Tip: "Enable Replay Buffer" must be enabled in Settings -> Output -> Recording.
+> The Base64 image data to render. Use a Base64 encoder such as [base64-image.de](https://www.base64-image.de/).
 
-#### Stop Replay Buffer
+>> The data should not include the prepended '***data:image/png;base64,***'.
 
-Attempts to stop the replay buffer.
+## Shared Stages
+![Shared Stage](./screenshots/shared-stage.png)
 
-> Tip: "Enable Replay Buffer" must be enabled in Settings -> Output -> Recording.
+> ##### Name
 
-#### Save Replay Buffer
+> The custom name to identify this shared stage.
 
-Attempts to save the replay buffer.
+> ##### Message
 
-> Tip: "Enable Replay Buffer" must be enabled in Settings -> Output -> Recording.
+> The message passed to the Wizard's message field when this stage runs.
 
-#### Start Virtual Camera
+> ##### Action Prompt
 
-Attempts to start the virtual camera.
+> The prompt passed to the Wizard's message field when this stage's action triggers.
 
-#### Stop Virtual Camera
+> ##### Resolution Prompt
 
-Attempts to stop the virtual camera.
+> The prompt passed to the Wizard's message field when this stage's action does not trigger.
 
-#### Is Streaming
+> ##### Image
 
-Indicates if the stream is active.
+> The image passed to the Wizard's image display when this stage's action triggers.
 
-#### Stream Timecode
+> ##### Wait Time
 
-Show the timecode of the current stream.
+> The time to wait when the action is triggered before allowing the user to give confirmation.
 
-#### Is Recording
+>> If the logic input changes to ***false*** during the wait time, the wait time will complete and the user will be able to give confirmation. This is because the logic is now indicating that there is no problem any more.
 
-Indicates if the recording is active.
+> ##### Logic Input
 
-#### Recording Timecode
+> The logic that determines whether the the stage should run an action or not.
 
-Show the timecode of the current recording.
+>> ***true*** results in the action being triggered.
 
-#### Virtual Camera Active
+>> ***false*** results in the stage being resolved.
 
-Indicates if the virtual camera is active.
+> ##### Action Trigger
 
-#### Virtual Camera Timecode
+> The trigger control that fires when the action is triggered.
 
-Show the timecode of the current virtual camera session.
+>> This should be used to trigger a corrective action in your design that should fix the issue.
 
-#### Recording Paused
+## Issues
+![Issue](./screenshots/issue.png)
 
-Indicates if the recording is paused.
+> ##### Enable
 
-#### Replay Buffer Active
+> If this issue is compiled into the Wizard list.
 
-Indicates if the replay buffer is active.
+> ##### Issue Category
 
-#### Stream Status Bitrate
+> The category name that this issue should be listed under.
 
-Shows the bitrate of the active stream.
+> ##### Description
 
-#### Stream Status FPS
+> The description of this issue that should appear in the issue list.
 
-Shows the fps of the active stream.
+> ##### Delay (Message => Prompt)
 
-#### Stream Status Strain
+> The delay between the message being display, and the prompt being displayed.
 
-Shows the strain of the active stream.
+>> Longer delay times allow more time for the user to process the information as the Wizard runs through a stage.
 
-#### Stream Status CPU
+>> ##### Stage X
 
-Shows the cpu usage during an active stream.
-
-#### Stream Status Memory
-
-Shows the memory usage during an active stream.
-
-#### Stream Status Disk
-
-Shows the available disk space during an active stream.
+>> The name of the shared stage to run.
