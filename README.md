@@ -190,6 +190,6 @@ Fires when the Wizard finishes in an unresolved state.
 
 > Longer delay times allow more time for the user to process the information as the Wizard runs through a stage.
 
-> ##### Stage X
+> ##### Stage ***X***
 
 > The name of the shared stage to run.
