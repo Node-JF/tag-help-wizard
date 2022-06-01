@@ -1,32 +1,201 @@
-# BasePlugin
+# OBS Websocket Remote Control
 
-This is a template plugin that you can download with some pre-written Lua code to get you started.
+This is a Q-SYS Plugin for Control of Open Broadcaster Software (OBS) via the [Websocket Extension](https://github.com/obsproject/obs-websocket/releases/tag/4.9.1).
 
-## PluginCompile
+> Bug reports and feature requests should be sent to Jason Foord (jf@tag.com.au).
 
-This is a submodule built for VS Code. Please note it is not intended to be used for any other source code editors.
+## How do I get set up?
 
-The submodule will take the individual source Lua files in your local repo, compile them into a singular qplug file, and auto increment the desired octet of the BuildVersion.
-For first time builds, it will auto-generate an UUID for you plugin as well.
+See [Q-SYS Online Help File - Plugins](https://q-syshelp.qsc.com/#Schematic_Library/plugins.htm)
 
-Make sure to map a keyboard shortcut by navigating to File>Preferences>Keyboard Shortcuts. Type in "Tasks" and assign the desired shortcut to the Tasks: Run Build Task command
+## Controls
 
-### Build Arguments
+### Configuration
+![Configuration Page](./Screenshots/configuration.png)
 
-<ver_maj> : increments the first octet of BuildVersion to denote a major version change
+#### Device Status
 
-<ver_min> : increments the second octet of BuildVersion to denote a minor version change
+Displays the connection status of the Websocket.
 
-<ver_fix> : increments the third octet of BuildVersion to denote a bugfix
+#### IP Address
 
-<ver_dev> : increments the fourth octet of BuildVersion to denote a new development version
+The IP Address of the machine running OBS Studio.
 
-< CANCEL > : cancels the build process
-  
-Please note that the public version (PluginVersion) only displays first and second octet. The second octets are intended for developer use and version tracking.
+#### Password
 
-## Support
+The Password configured in the *Tools -> Websocket Server Settings* dialogue menu.
 
-If you have any questions or concerns with this template, please contact qsyscontrolfeedback@qsc.com
+#### Connect
 
-Please note that QSC does not support plugins authored by third party developers or companies.
+Toggles the Websocket connection.
+
+### Dashboard
+![Configuration Page](./Screenshots/dashboard.png)
+
+#### OBS Version
+
+The detected version of the connected OBS Studio software.
+
+#### Websocket Version
+
+The detected version of the connected OBS Studio Websocket extension.
+
+#### Scenes
+
+Displays the list of available scenes. Selecting a scene will transition to the scene.
+
+> Tip: For discrete controls, create a copy of the ListBox control and change the presentation to Button -> String, with the "Button String" value as the scene name.
+
+#### Sources
+
+Displays the list of available sources in the active scene. Selecting a source will update 'render' and 'locked' controls with the value corresponding to *this* source.
+
+> Tip: For discrete controls, create a copy of the ListBox control and change the presentation to Button -> String, with the "Button String" value as the source name.
+
+#### Audio Mixer
+
+Displays the list of audio mixer sources in the scene. Selecting an audio source will update 'volume' and 'mute' controls with the value corresponding to *this* source.
+
+> Tip: For discrete controls, create a copy of the ListBox control and change the presentation to Button -> String, with the "Button String" value as the audio source name.
+
+#### Source Forward
+
+Rearranges the sources by bringing the selected source forward one position.
+
+#### Source Backward
+
+Rearranges the sources by bringing the selected source backward one position.
+
+#### Source Render
+
+Sets the render state of the source.
+
+#### Source Locked
+
+Sets the locked state of the source.
+
+#### Source Volume
+
+Sets the volume of the audio source.
+
+#### Source Mute
+
+Sets the mute of the audio source.
+
+#### Transition Type
+
+Set the current direct cut transition.
+
+#### Transition Duration
+
+Sets the curren direct cut transition duration.
+
+> Only applies to transition types that utilize a duration value.
+
+#### Start Streaming
+
+Attempts to start streaming.
+
+#### Stop Streaming
+
+Attempts to stop streaming.
+
+#### Start Recording
+
+Attempts to start recording.
+
+#### Stop Recording
+
+Attempts to stop recording.
+
+#### Pause Recording
+
+Attempts to pause recording.
+
+> Tip: Recordings cannot be paused if the recording quality is set to "Same as stream".
+
+#### Resume Recording
+
+Resumes a paused recording.
+
+#### Start Replay Buffer
+
+Attempts to start the replay buffer.
+
+> Tip: "Enable Replay Buffer" must be enabled in Settings -> Output -> Recording.
+
+#### Stop Replay Buffer
+
+Attempts to stop the replay buffer.
+
+> Tip: "Enable Replay Buffer" must be enabled in Settings -> Output -> Recording.
+
+#### Save Replay Buffer
+
+Attempts to save the replay buffer.
+
+> Tip: "Enable Replay Buffer" must be enabled in Settings -> Output -> Recording.
+
+#### Start Virtual Camera
+
+Attempts to start the virtual camera.
+
+#### Stop Virtual Camera
+
+Attempts to stop the virtual camera.
+
+#### Is Streaming
+
+Indicates if the stream is active.
+
+#### Stream Timecode
+
+Show the timecode of the current stream.
+
+#### Is Recording
+
+Indicates if the recording is active.
+
+#### Recording Timecode
+
+Show the timecode of the current recording.
+
+#### Virtual Camera Active
+
+Indicates if the virtual camera is active.
+
+#### Virtual Camera Timecode
+
+Show the timecode of the current virtual camera session.
+
+#### Recording Paused
+
+Indicates if the recording is paused.
+
+#### Replay Buffer Active
+
+Indicates if the replay buffer is active.
+
+#### Stream Status Bitrate
+
+Shows the bitrate of the active stream.
+
+#### Stream Status FPS
+
+Shows the fps of the active stream.
+
+#### Stream Status Strain
+
+Shows the strain of the active stream.
+
+#### Stream Status CPU
+
+Shows the cpu usage during an active stream.
+
+#### Stream Status Memory
+
+Shows the memory usage during an active stream.
+
+#### Stream Status Disk
+
+Shows the available disk space during an active stream.
