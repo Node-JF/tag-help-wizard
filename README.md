@@ -1,6 +1,8 @@
-# OBS Websocket Remote Control
+# TAG Help Wizard
 
-This is a Q-SYS Plugin for Control of Open Broadcaster Software (OBS) via the [Websocket Extension](https://github.com/obsproject/obs-websocket/releases/tag/4.9.1).
+This is a Q-SYS Plugin for creating a help Wizard on a user interface to assist users with common issues.
+
+The Wizard does not house the logic or actions, but instead takes a ***boolean*** logic input for each ***stage*** of an ***issue***. It fires an ***action trigger*** if the logic is ***true***, and skips to the next ***stage*** if the logic is ***false***.
 
 > Bug reports and feature requests should be sent to Jason Foord (jf@tag.com.au).
 
@@ -14,13 +16,13 @@ See [Q-SYS Online Help File - Plugins](https://q-syshelp.qsc.com/#Schematic_Libr
 
 The number of configurable image slots in the Image Store
 
-> Images are referenced by their name, and configured in Shared Stages.
+> Images are referenced by their name in ***shared stages***.
 
 #### Total Stages
 
 The maximum number of shared stages the can be configured.
 
-> Shared Stages are referenced by their name, and configured in Issues.
+> Shared Stages are referenced by their name in ***issues***.
 
 #### Total Issues
 
@@ -124,6 +126,8 @@ Fires when the Wizard finishes in an unresolved state.
 
  The Base64 image data to render. Use a Base64 encoder such as [base64-image.de](https://www.base64-image.de/).
 
+ <a href="https://www.base64-image.de/" target="_blank">base64-image.de</a>
+
 > The data should not include the prepended '***data:image/png;base64,***'.
 
 ## Shared Stages
@@ -149,11 +153,22 @@ Fires when the Wizard finishes in an unresolved state.
 
  The image passed to the Wizard's image display when this stage's action triggers.
 
+ > This is a button that is rendered with a .Legend Property of:
+
+ ```lua
+rapidjson.encode({
+    DrawChrome = false,
+    IconData = data
+})
+```
+
+>> the 'data' variable is base64 encoded image data.
+
  ##### Wait Time
 
  The time to wait when the action is triggered before allowing the user to give confirmation.
 
-> If the logic input changes to ***false*** during the wait time, the wait time will complete and the user will be able to give confirmation. This is because the logic is now indicating that there is no problem any more.
+> If the logic input changes to ***false*** during the wait time, the wait time will complete and the user will be able to give confirmation. This is because the logic is now indicating that the problem has been fixed.
 
  ##### Logic Input
 
@@ -190,6 +205,6 @@ Fires when the Wizard finishes in an unresolved state.
 
 > Longer delay times allow more time for the user to process the information as the Wizard runs through a stage.
 
-> ##### Stage ***X***
+ ##### Stage ***X***
 
 > The name of the shared stage to run.
