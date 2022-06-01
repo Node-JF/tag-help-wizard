@@ -124,9 +124,7 @@ Fires when the Wizard finishes in an unresolved state.
 
  ##### Base64 Image Data
 
- The Base64 image data to render. Use a Base64 encoder such as [base64-image.de](https://www.base64-image.de/).
-
- <a href="https://www.base64-image.de/" target="_blank">base64-image.de</a>
+ The Base64 image data to render. Use a Base64 encoder such as [base64-image.de](https://www.base64-image.de/){:target="\_blank"}.
 
 > The data should not include the prepended '***data:image/png;base64,***'.
 
