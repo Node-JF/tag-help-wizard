@@ -116,80 +116,80 @@ Fires when the Wizard finishes in an unresolved state.
 
 #### Image 
 
-> ##### Name
+ ##### Name
 
-> The custom name to identify this image.
+ The custom name to identify this image.
 
-> ##### Base64 Image Data
+ ##### Base64 Image Data
 
-> The Base64 image data to render. Use a Base64 encoder such as [base64-image.de](https://www.base64-image.de/).
+ The Base64 image data to render. Use a Base64 encoder such as [base64-image.de](https://www.base64-image.de/).
 
->> The data should not include the prepended '***data:image/png;base64,***'.
+> The data should not include the prepended '***data:image/png;base64,***'.
 
 ## Shared Stages
 ![Shared Stage](./screenshots/shared-stage.png)
 
-> ##### Name
+ ##### Name
 
-> The custom name to identify this shared stage.
+ The custom name to identify this shared stage.
 
-> ##### Message
+ ##### Message
 
-> The message passed to the Wizard's message field when this stage runs.
+ The message passed to the Wizard's message field when this stage runs.
 
-> ##### Action Prompt
+ ##### Action Prompt
 
-> The prompt passed to the Wizard's message field when this stage's action triggers.
+ The prompt passed to the Wizard's message field when this stage's action triggers.
 
-> ##### Resolution Prompt
+ ##### Resolution Prompt
 
-> The prompt passed to the Wizard's message field when this stage's action does not trigger.
+ The prompt passed to the Wizard's message field when this stage's action does not trigger.
 
-> ##### Image
+ ##### Image
 
-> The image passed to the Wizard's image display when this stage's action triggers.
+ The image passed to the Wizard's image display when this stage's action triggers.
 
-> ##### Wait Time
+ ##### Wait Time
 
-> The time to wait when the action is triggered before allowing the user to give confirmation.
+ The time to wait when the action is triggered before allowing the user to give confirmation.
 
->> If the logic input changes to ***false*** during the wait time, the wait time will complete and the user will be able to give confirmation. This is because the logic is now indicating that there is no problem any more.
+> If the logic input changes to ***false*** during the wait time, the wait time will complete and the user will be able to give confirmation. This is because the logic is now indicating that there is no problem any more.
 
-> ##### Logic Input
+ ##### Logic Input
 
-> The logic that determines whether the the stage should run an action or not.
+ The logic that determines whether the the stage should run an action or not.
 
->> ***true*** results in the action being triggered.
+> ***true*** results in the action being triggered.
 
->> ***false*** results in the stage being resolved.
+> ***false*** results in the stage being resolved.
 
-> ##### Action Trigger
+ ##### Action Trigger
 
-> The trigger control that fires when the action is triggered.
+ The trigger control that fires when the action is triggered.
 
->> This should be used to trigger a corrective action in your design that should fix the issue.
+> This should be used to trigger a corrective action in your design that should fix the issue.
 
 ## Issues
 ![Issue](./screenshots/issue.png)
 
-> ##### Enable
+ ##### Enable
 
-> If this issue is compiled into the Wizard list.
+ If this issue is compiled into the Wizard list.
 
-> ##### Issue Category
+ ##### Issue Category
 
-> The category name that this issue should be listed under.
+ The category name that this issue should be listed under.
 
-> ##### Description
+ ##### Description
 
-> The description of this issue that should appear in the issue list.
+ The description of this issue that should appear in the issue list.
 
-> ##### Delay (Message => Prompt)
+ ##### Delay (Message => Prompt)
 
-> The delay between the message being display, and the prompt being displayed.
+ The delay between the message being display, and the prompt being displayed.
 
->> Longer delay times allow more time for the user to process the information as the Wizard runs through a stage.
+> Longer delay times allow more time for the user to process the information as the Wizard runs through a stage.
 
->> ##### Stage X
+> ##### Stage X
 
->> The name of the shared stage to run.
+> The name of the shared stage to run.
